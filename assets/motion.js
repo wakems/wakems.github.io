@@ -12,7 +12,7 @@ if(h1){
   h1.querySelectorAll('.w>span').forEach((s,i)=>s.style.animationDelay=(.08+i*.07)+'s');h1.classList.add('split');setTimeout(()=>h1.classList.add('done'),2600);
 }
 /* apparitions au défilement */
-const SEL='.trailer,.featured,.weekVote .blockHead,.wv,.howItem,.block .blockHead,.rv,.contact,.tiktokBand';
+const SEL='.quizBand,.trailer,.featured,.weekVote .blockHead,.wv,.howItem,.block .blockHead,.rv,.contact,.tiktokBand';
 let io=null;
 if('IntersectionObserver' in window)io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px',threshold:.08});
 function arm(){

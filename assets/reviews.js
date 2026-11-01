@@ -19,7 +19,7 @@ function levelOf(kind,txt){
   if(/mod[eé]r|moyen|correct|pr[eé]sent/.test(t))return 3;if(/discret|l[eé]ger|peau|intime|faible/.test(t))return 2;return null;
 }
 const meter=l=>l==null?'':'<span class="meter" aria-hidden="true">'+[0,1,2,3,4].map(i=>'<i'+(i<l?' class="on"':'')+'></i>').join('')+'</span>';
-let rows=[],sb=null,debates=new Map(),counts=new Map(),fam='Tous';
+let rows=[],sb=null,debates=new Map(),counts=new Map(),fam='Tous',rates=new Map();
 /* familles olfactives (même logique que le studio) */
 const FAMS=[['Gourmand',/vanill|tonka|gourmand|caramel|pralin|chocolat|cacao|caf[eé]|miel|cr[eè]me|amande|sucr|biscuit|bru?l/],['Ambré',/ambr|benjoin|labdanum|r[eé]sine|[eé]pic|poivre|cannelle|canelle|safran|cardamome|gingembre|girofle/],['Boisé',/bois|c[eè]dre|santal|vetiver|patchouli|oud|cuir|tabac|fum[eé]|encens/],['Floral',/floral|fleur|rose|jasmin|iris|pivoine|tub[eé]reuse|ylang|muguet|violette|poudr/],['Frais',/frais|fra[iî]ch|marin|aquatique|menthe|hesp[eé]rid|citr|bergamot|orange|mandarine|pamplemousse|agrum|yuzu|lavande|aromat|vert|th[eé]/],['Fruité',/fruit|pomme|poire|p[eê]che|framboise|cassis|fraise|cerise|abricot|prune|coco|ananas|mangue/],['Musqué',/musc|musk|coton|propre/]];
 const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
@@ -72,6 +72,7 @@ function openReview(id){
       <span class="eyebrow">${esc([r.brand,r.concentration,r.release_year].filter(Boolean).join(' · '))}</span>
       <h2 id="reviewTitle">${esc(r.name)}</h2>
       <div class="rvMeta big">${r.score!=null?`<span class="rvScore">${fmt(r.score)}<small>/10</small></span>`:''}<span class="rvVerdict v-${v}">${VERD[v]}</span></div>
+      <div class="rvRate"><p class="rrAvg">${rateLine(r)}</p><div class="rrMine"></div></div>
       ${(r.accords||[]).length?`<div class="rvAccords">${r.accords.map(a=>`<span>${esc(a)}</span>`).join('')}</div>`:''}
       <div class="rvSection"><span>Le parfum</span><p>${esc(describe(r))}</p></div>
       ${(r.slides||[]).length?`<div class="rvSlides"><span>Les diapos Wakems · glisse →</span><div class="slideRail">${r.slides.map((u,i)=>`<img src="${esc(u)}" alt="Diapo ${i+1} sur ${r.slides.length} : ${esc(r.name)}" loading="lazy" data-zoom="${i}">`).join('')}</div></div>`:''}
@@ -79,10 +80,13 @@ function openReview(id){
       ${perf.length?`<div class="rvPerf">${perf.map(p=>`<div><span>${p[0]}</span><b>${esc(p[1])}</b>${meter(p[2])}</div>`).join('')}</div>`:''}
       <div class="rvRows">${line('Tête',r.notes_top)}${line(!r.notes_top&&!r.notes_base?'Notes':'Cœur',r.notes_heart)}${line('Fond',r.notes_base)}${line('Parfumeur',r.perfumer)}${line('Prix',r.price)}</div>
       ${debates.has(r.id)?`<div class="rvDebate"><p>Et toi, tu en penses quoi ?${counts.get(r.id)?` <small>${counts.get(r.id)} avis déjà</small>`:''}</p><button type="button" class="primary" data-debate="${esc(debates.get(r.id))}">Donner mon avis ↗</button></div>`:''}
+      ${(()=>{const sim=similar(r);return sim.length?`<div class="rvSimilar"><span>Dans le même esprit</span><div class="simRow">${sim.map(x=>`<button type="button" class="simCard" data-sim="${esc(x.id)}"><span class="simImg" style="--rv:${esc(x.color||'#E9E1D6')}">${x.image_url?`<img src="${esc(x.image_url)}" alt="" loading="lazy">`:''}</span><b>${esc(x.name)}</b><small>${esc(x.brand||'')}${x.score!=null?' · '+fmt(x.score)+'/10':''}</small></button>`).join('')}</div></div>`:''})()}
       <div class="rvShare"><button type="button" class="ghost" data-share="${esc(r.id)}">Partager ce parfum</button><span class="rvShareMsg" aria-live="polite"></span></div>
     </div>`;
   const db_=m.querySelector('[data-debate]');
   if(db_)db_.addEventListener('click',()=>{const pid=db_.dataset.debate;closeReview();let ok=false;try{ok=(0,eval)('typeof openDiscussion==="function"&&posts.some(p=>p.id==="'+pid.replace(/[^a-f0-9-]/gi,'')+'")')}catch(e){}if(ok){(0,eval)('openDiscussion')(pid)}else{const d=document.getElementById('debats');if(d)d.scrollIntoView({behavior:'smooth'})}});
+  m.querySelectorAll('[data-sim]').forEach(b=>b.addEventListener('click',()=>{openReview(b.dataset.sim);const d=m.querySelector('.dialog');if(d)d.scrollTop=0}));
+  mountRate(m,r);
   m.querySelectorAll('[data-zoom]').forEach(im=>im.addEventListener('click',()=>zoomSlides(r.slides,+im.dataset.zoom)));
   const sh=m.querySelector('[data-share]');
   if(sh)sh.addEventListener('click',async()=>{const url=location.origin+'/?parfum='+encodeURIComponent(r.id),txt=r.name+(r.brand?' · '+r.brand:'')+(r.score!=null?' : '+fmt(r.score)+'/10':'')+' sur Wakems';
@@ -101,17 +105,51 @@ function zoomSlides(list,i){
   let sx=null;z.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});z.addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40){show(i+(dx<0?1:-1))}sx=null});
   document.addEventListener('keydown',key,true);document.body.appendChild(z);show(i);z.querySelector('.szClose').focus();
 }
+/* ---------- notes des membres ---------- */
+async function loadRates(c){
+  try{const {data}=await c.from('wakems_ratings').select('review_id,score').limit(20000);rates=new Map();(data||[]).forEach(x=>{const o=rates.get(x.review_id)||{s:0,n:0};o.s+=Number(x.score);o.n++;rates.set(x.review_id,o)})}catch(e){}
+}
+function pageSb(){try{return (0,eval)('typeof sb!=="undefined"?sb:null')}catch(e){return null}}
+async function me(){const c=pageSb();if(!c||!c.auth)return null;try{const {data:{session}}=await c.auth.getSession();return session&&session.user?session.user:null}catch(e){return null}}
+function rateLine(r){const o=rates.get(r.id);return o&&o.n?`<b>${fmt(Math.round(o.s/o.n*10)/10)}</b><small>/10</small> <span>· ${o.n} note${o.n>1?'s':''} des membres</span>`:'<span>Aucune note des membres pour l’instant</span>'}
+async function mountRate(m,r){
+  const box=m.querySelector('.rvRate');if(!box)return;const u=await me();
+  if(!u){box.querySelector('.rrMine').innerHTML='<a href="/profil" class="rrLogin">Connecte-toi pour donner ta note →</a>';return}
+  const c=pageSb();let mine=null;
+  try{const {data}=await c.from('wakems_ratings').select('score').eq('review_id',r.id).eq('user_id',u.id).maybeSingle();if(data)mine=Number(data.score)}catch(e){}
+  const v0=mine==null?7:mine;
+  box.querySelector('.rrMine').innerHTML=`<label for="rrIn">Ta note</label><input id="rrIn" type="range" min="0" max="10" step="0.5" value="${v0}"><output id="rrOut">${fmt(v0)}</output><button type="button" class="primary" id="rrGo">${mine==null?'Noter':'Modifier'}</button>`;
+  const inp=box.querySelector('#rrIn'),out=box.querySelector('#rrOut'),go=box.querySelector('#rrGo');
+  const paint=()=>{out.textContent=fmt(inp.value);inp.style.setProperty('--p',(inp.value*10)+'%')};paint();inp.addEventListener('input',paint);
+  go.addEventListener('click',async()=>{
+    go.disabled=true;const v=Number(inp.value);let res;
+    if(mine==null)res=await c.from('wakems_ratings').insert({review_id:r.id,user_id:u.id,score:v});
+    else res=await c.from('wakems_ratings').update({score:v,updated_at:new Date().toISOString()}).eq('review_id',r.id).eq('user_id',u.id);
+    go.disabled=false;
+    if(res.error){go.textContent='Réessaie';return}
+    const o=rates.get(r.id)||{s:0,n:0};if(mine==null){o.s+=v;o.n++}else{o.s+=v-mine}rates.set(r.id,o);mine=v;
+    box.querySelector('.rrAvg').innerHTML=rateLine(r);go.textContent='Merci ✓';setTimeout(()=>{go.textContent='Modifier'},1600);
+  });
+}
+/* ---------- parfums proches ---------- */
+const toks=r=>new Set(norm([r.notes_top,r.notes_heart,r.notes_base].join(',')).split(/[,;/]+|\s+et\s+/).map(x=>x.trim()).filter(x=>x.length>2));
+function similar(r){
+  const A=new Set((r.accords||[]).map(norm)),T=toks(r),F=famOf(r);
+  return rows.filter(x=>x.id!==r.id).map(x=>{let s=0;(x.accords||[]).forEach(a=>{if(A.has(norm(a)))s+=3});if(famOf(x)===F)s+=2;let k=0;toks(x).forEach(t=>{if(T.has(t))k++});s+=Math.min(k,4);s+=(Number(x.score)||0)/20;return {x,s}})
+    .filter(o=>o.s>=2).sort((a,b)=>b.s-a.s).slice(0,3).map(o=>o.x);
+}
 function closeReview(){const m=document.getElementById('reviewModal');if(!m)return;if(m.classList.contains('open')){try{history.replaceState(null,'',location.pathname+location.hash)}catch(e){}}m.classList.remove('open');document.body.style.overflow=''}
 async function load(){
   const c=getSb();if(!c){grid.innerHTML='<div class="empty"><strong>Connexion indisponible.</strong><p>Recharge la page dans un instant.</p></div>';return}
   const {data,error}=await c.from('wakems_reviews').select('*').eq('is_published',true).order('created_at',{ascending:false}).limit(200);
   if(error){console.warn(error);grid.innerHTML='<div class="empty"><strong>Avis indisponibles pour le moment.</strong><p>Réessaie un peu plus tard.</p></div>';return}
   rows=data||[];
+  await loadRates(c);
   try{const {data:ps}=await c.from('community_posts').select('id,review_id').not('review_id','is',null).limit(500);debates=new Map((ps||[]).map(p=>[p.review_id,p.id]));
     const ids=(ps||[]).map(p=>p.id);
     if(ids.length){const {data:cm}=await c.from('community_comments').select('post_id').eq('is_hidden',false).in('post_id',ids).limit(10000);const byPost={};(cm||[]).forEach(x=>byPost[x.post_id]=(byPost[x.post_id]||0)+1);debates.forEach((pid,rid)=>{if(byPost[pid])counts.set(rid,byPost[pid])})}}catch(e){}
   buildChips();render();featured();stats(c);
-  try{window.wakemsOpenReview=openReview;window.dispatchEvent(new CustomEvent('wakems:reviews',{detail:rows}))}catch(e){}
+  try{window.wakemsOpenReview=openReview;window.wakemsHelpers={famOf,levelOf,norm,fmt,esc,FAMS};window.dispatchEvent(new CustomEvent('wakems:reviews',{detail:rows}))}catch(e){}
   const deep=new URLSearchParams(location.search).get('parfum');if(deep&&rows.some(r=>r.id===deep))openReview(deep);
   const cnt=document.getElementById('reviewCount');if(cnt)cnt.textContent=rows.length?rows.length+' parfum'+(rows.length>1?'s':'')+' noté'+(rows.length>1?'s':''):'';
 }

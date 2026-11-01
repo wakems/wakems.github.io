@@ -77,7 +77,7 @@ body.public-mode .toplinks{display:flex!important}
 })();
 </script>
 <link rel="preload" href="/assets/fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/wakems-theme.css?v=1793551479">
+<link rel="stylesheet" href="/assets/wakems-theme.css?v=1793551880">
 </head>
 <body class="public-mode">
 <div class="shell">
@@ -115,10 +115,11 @@ body.public-mode .toplinks{display:flex!important}
     <p class="wvMeta"></p><p class="wvLast" hidden></p>
   </section>
 
-  <section class="how" aria-label="Comment ça marche">
-    <div class="howItem"><span class="howN">01</span><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="21" cy="21" r="13"/><path d="M31 31l10 10"/></svg><h3>Découvre</h3><p>Des parfums testés et notés, avec leurs accords, leur tenue et leur sillage.</p></div>
-    <div class="howItem"><span class="howN">02</span><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6l5.5 11.6 12.5 1.6-9.2 8.6 2.4 12.4L24 34l-11.2 6.2 2.4-12.4L6 19.2l12.5-1.6z"/></svg><h3>Évalue</h3><p>Donne ta note, compare avec la mienne et celle des autres passionnés.</p></div>
-    <div class="howItem"><span class="howN">03</span><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="16" cy="18" r="6"/><circle cx="32" cy="18" r="6"/><path d="M4 40c1-8 7-12 12-12s11 4 12 12M20 40c1-8 7-12 12-12s11 4 12 12"/></svg><h3>Partage</h3><p>Crée ton top 10, débats sous chaque note et partage tes coups de cœur.</p></div>
+  <section class="quizBand" id="quiz" aria-labelledby="quizTitle">
+    <span class="eyebrow">4 questions · 30 secondes</span>
+    <h2 class="sectionTitle" id="quizTitle">Trouve <em>ton parfum.</em></h2>
+    <p>Dis-nous ce que tu aimes, on te propose le parfum noté par Wakems qui te correspond.</p>
+    <button type="button" class="primary" id="quizStart">Commencer</button>
   </section>
 
   <section class="block" id="avis" aria-labelledby="avisTitle">
@@ -175,16 +176,20 @@ body.public-mode .toplinks{display:flex!important}
   <div class="dialog"><div class="dialogTop"><strong>Le débat autour de cette note</strong><button class="close" id="closeDiscussion" type="button" aria-label="Fermer">×</button></div><div class="detailGrid"><div class="detailVisual"><img id="detailImage" alt="Visuel de la note"></div><div class="discussion"><div class="detailEyebrow" id="detailCategory"></div><h2 id="discussionTitle"></h2><div class="detailCaption" id="detailCaption"></div><h3 class="threadTitle">Les avis <span id="commentCount"></span></h3><div class="comments" id="comments"><p class="noteWarn">Chargement des avis…</p></div><form class="commentForm" id="commentForm"><p id="replying" class="replying"></p><div class="formRow"><input class="field" id="nickname" maxlength="24" placeholder="Ton pseudo" required><textarea class="field" id="commentBody" maxlength="500" placeholder="Tu ressens quoi en voyant cette note ?" required></textarea></div><div class="formActions"><span class="micro">Pseudo uniquement. Ne partage pas de coordonnées. Les membres connectés peuvent associer leur avis à leur profil. 500 caractères maximum.</span><button class="primary" type="submit">Publier mon avis</button></div><p id="commentStatus" class="noteWarn" aria-live="polite"></p></form></div></div></div>
 </div>
 
+<div class="modal quizModal" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="qzTitle">
+  <div class="dialog"><div class="dialogTop"><strong>Trouve ton parfum</strong><button class="close" type="button" aria-label="Fermer">×</button></div><div class="qzBody"></div></div>
+</div>
 <div class="modal rvModal" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
   <div class="dialog"><div class="dialogTop"><strong>L'avis Wakems</strong><button class="close" type="button" aria-label="Fermer">×</button></div><div class="rvDetail"></div></div>
 </div>
 
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/reviews.js?v=1793551479"></script>
-<script src="/assets/vote.js?v=1793551479"></script>
-<script src="/assets/motion.js?v=1793551479"></script>
-<script src="/assets/site.js?v=1793551479"></script>
+<script src="/assets/reviews.js?v=1793551880"></script>
+<script src="/assets/vote.js?v=1793551880"></script>
+<script src="/assets/quiz.js?v=1793551880"></script>
+<script src="/assets/motion.js?v=1793551880"></script>
+<script src="/assets/site.js?v=1793551880"></script>
 <script>
 (function(){
   const v=document.getElementById('trailerVid');if(!v)return;
