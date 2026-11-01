@@ -1504,14 +1504,25 @@ async function packFromLink(){
   if(!url){$('packMsg').textContent='Colle le lien de la page du parfum.';return}
   $('packFill').disabled=true;$('packMsg').textContent='Lecture de la page…';
   try{
-    if(!lib.some(v=>v.src===url)){$('links').value=url;await importLinks()}
+    const old=lib.find(x=>x.src===url);
+    if(!old){$('links').value=url;await importLinks()}
+    else{ /* déjà dans la liste : on relit la page et on complète ce qui manque */
+      try{
+        const r=await enrichShopify(url,parseHtml(await fetchHtml(url),url));
+        const put=(k,val)=>{if(val&&!old[k])old[k]=val};
+        put('brand',r.brand);put('conc',r.conc);put('year',r.year);put('perfumer',r.perfumer);put('price',r.price);put('tenue',r.tenue);put('sillage',r.sillage);
+        if(!hasNotes(old)){old.notesTop=r.notesTop||'';old.notesHeart=r.notesHeart||'';old.notesBase=r.notesBase||'';if(r.accords&&r.accords.length&&hasNotes(old))old.accords=[r.accords[0]||'',r.accords[1]||'',r.accords[2]||'']}
+        if(!old.photoId&&r.image){try{const b=await normalizeBlob(await fetchImageBlob(r.image)),pid='p'+uid();await dbPut('photos',{id:pid,blob:b});old.photoId=pid}catch(e){}}
+        old.updatedAt=Date.now();await dbPut('fiches',old);renderLib();
+      }catch(e){$('packMsg').textContent='Page illisible depuis le navigateur. Complète la fiche à la main.';return}
+    }
     const v=lib.find(x=>x.src===url);
     if(!v){$('packMsg').textContent='Page illisible : ajoute le parfum à la main (partie 1).';return}
     S.packId=v.id;saveSettings();refreshPackSel();capDirty=false;scheduleStrip();
     const miss=[];if(!v.brand)miss.push('marque');if(!hasNotes(v))miss.push('notes');if(!v.photoId)miss.push('photo');
     $('packMsg').textContent='✓ '+v.name+(v.brand?' · '+v.brand:'')+' rempli.'+(miss.length?' Introuvable sur la page : '+miss.join(', ')+'. Touche une image de l’aperçu pour compléter.':'');
     $('packLink').value='';
-  }finally{$('packFill').disabled=false}
+  }catch(e){console.warn(e);$('packMsg').textContent='Erreur : '+(e&&e.message||e)+'. Recharge la page et réessaie.'}finally{$('packFill').disabled=false}
 }
 $('packFill').addEventListener('click',packFromLink);
 $('packLink').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();packFromLink()}});
