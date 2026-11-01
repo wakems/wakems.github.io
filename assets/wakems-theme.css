@@ -405,23 +405,43 @@ h1 em,.sectionTitle em,.contact h2 em,.tiktokBand h2 em{font-style:italic;font-w
 @media(min-width:701px){.wvImg{aspect-ratio:4/3}}
 /* ===== Animations douces ===== */
 @keyframes wkUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-.motion .hero h1{animation:wkUp 1s cubic-bezier(.2,.7,.2,1) both}
-.motion .hero .eyebrow,.motion .hero p{animation:wkUp 1s .15s cubic-bezier(.2,.7,.2,1) both}
-.motion .hero .heroBtns{animation:wkUp 1s .3s cubic-bezier(.2,.7,.2,1) both}
-.motion .hero .stats,.motion .hero .heroStats{animation:wkUp 1s .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes wkWord{from{transform:translateY(105%)}to{transform:none}}
+.hero{position:relative;isolation:isolate}
+.hero h1.split .w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .08em .22em;margin:0 -.08em -.22em}
+.hero h1.split.done .w{overflow:visible}
+.hero h1.split .w>span{display:inline-block;animation:wkWord 1s cubic-bezier(.2,.75,.15,1) both}
+.motion .hero .eyebrow{animation:wkUp .9s cubic-bezier(.2,.7,.2,1) both}
+.motion .hero p{animation:wkUp 1s .55s cubic-bezier(.2,.7,.2,1) both}
+.motion .hero .heroBtns{animation:wkUp 1s .7s cubic-bezier(.2,.7,.2,1) both}
+.motion .hero .stats{animation:wkUp 1s .85s cubic-bezier(.2,.7,.2,1) both}
+/* brume parfumée derrière le titre */
+.mist{position:absolute;inset:-10% -20% 0;z-index:-1;pointer-events:none;overflow:hidden}
+.mist i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5}
+.mist i:nth-child(1){width:46vw;height:46vw;max-width:620px;max-height:620px;left:8%;top:6%;background:radial-gradient(circle,#E8C9A6 0%,transparent 70%);animation:mist1 22s ease-in-out infinite alternate}
+.mist i:nth-child(2){width:40vw;height:40vw;max-width:540px;max-height:540px;right:6%;top:18%;background:radial-gradient(circle,#D9B4B0 0%,transparent 70%);animation:mist2 26s ease-in-out infinite alternate}
+.mist i:nth-child(3){width:34vw;height:34vw;max-width:460px;max-height:460px;left:36%;top:44%;background:radial-gradient(circle,#CFC2A0 0%,transparent 70%);animation:mist3 30s ease-in-out infinite alternate}
+@keyframes mist1{to{transform:translate(12vw,6vh) scale(1.15)}}
+@keyframes mist2{to{transform:translate(-14vw,8vh) scale(.9)}}
+@keyframes mist3{to{transform:translate(8vw,-10vh) scale(1.2)}}
+/* bandeau de mots qui défile */
+.marq{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 calc(50% - 50vw) clamp(32px,5vw,56px);padding:clamp(12px,1.6vw,18px) 0}
+@keyframes wkMarq{to{transform:translateX(-50%)}}
+.marqT{display:flex;align-items:center;gap:clamp(18px,2.4vw,34px);width:max-content;animation:wkMarq 48s linear infinite;font-family:var(--serif);font-weight:700;font-size:clamp(26px,3.6vw,48px);line-height:1;white-space:nowrap;color:var(--ink)}
+.marqT em{font-style:italic;font-weight:500}
+.marqT b{font-size:.45em;color:var(--accent);font-weight:400}
+/* apparitions */
 .rev{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
 .rev.in{opacity:1;transform:none}
-.rv .rvImg img,.wv .wvImg img,.featured img{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.rev.in,.wv.rev.in{transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .35s ease-out}
+.rv,.wv{will-change:transform}
+.rv .rvImg img,.wv .wvImg img{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
 @media(hover:hover){.rv:hover .rvImg img,.wv:hover .wvImg img{transform:translateY(-6px) scale(1.04)}}
 @keyframes wkFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 .featured img{animation:wkFloat 6s ease-in-out infinite}
-.slideBand{margin:0 0 clamp(40px,6vw,72px);padding-top:clamp(32px,5vw,56px);border-top:1px solid var(--line)}
-.slideBand[hidden]{display:none}
-.sbViewport{overflow:hidden;margin:0 calc(50% - 50vw);padding:6px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
-@keyframes wkMarq{to{transform:translateX(-50%)}}
-.sbTrack{display:flex;gap:14px;width:max-content;animation:wkMarq var(--sbDur,60s) linear infinite}
-.sbViewport:hover .sbTrack{animation-play-state:paused}
-.sbItem{flex:0 0 auto;width:clamp(150px,17vw,230px);aspect-ratio:4/5;padding:0;border:0;background:#ddd;cursor:pointer;overflow:hidden}
-.sbItem img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
-.sbItem:hover img{transform:scale(1.05)}
-@media(prefers-reduced-motion:reduce){.rev{opacity:1;transform:none;transition:none}.motion .hero *{animation:none!important}.featured img,.sbTrack{animation:none}.sbViewport{overflow-x:auto}}
+/* fiche parfum : ouverture en glissé */
+@keyframes wkSheet{from{opacity:0;transform:translateY(40px) scale(.98)}to{opacity:1;transform:none}}
+.modal.open .modalBox,.modal.open>div:first-child{animation:wkSheet .55s cubic-bezier(.2,.75,.15,1) both}
+.rvDetail .rvMeta .rvScore{display:inline-block;animation:wkUp .7s .25s cubic-bezier(.2,.7,.2,1) both}
+.wvBar i{animation:wkGrow 1s cubic-bezier(.2,.7,.2,1) both;transform-origin:left}
+@keyframes wkGrow{from{transform:scaleX(0)}}
+@media(prefers-reduced-motion:reduce){.rev{opacity:1;transform:none;transition:none}.motion .hero *,.mist i,.marqT,.featured img,.modal *,.wvBar i{animation:none!important}}
