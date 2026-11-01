@@ -64,7 +64,7 @@ body.creator-mode .creatorHomeLink { display:inline-flex; }
 })();
 </script>
 <link rel="preload" href="/assets/fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/wakems-theme.css?v=1793551363">
+<link rel="stylesheet" href="/assets/wakems-theme.css?v=1793551479">
 </head>
 <body class="creator-mode">
 <div class="shell">
@@ -223,8 +223,8 @@ async function init(){if(localStorage.getItem('mp-nickname'))$('nickname').value
  inviteFlow=new URLSearchParams(window.location.hash.replace(/^#/,'' )).get('type')==='invite';sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);setStatus('Connexion à la communauté…');await loadPosts();await checkAdmin();sb.auth.onAuthStateChange(()=>setTimeout(checkAdmin,0));liveChannel=sb.channel('community-live').on('postgres_changes',{event:'*',schema:'public',table:'community_posts'},()=>loadPosts()).on('postgres_changes',{event:'INSERT',schema:'public',table:'community_comments'},payload=>{if(currentPost&&payload.new.post_id===currentPost.id)loadComments()}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'community_comments'},payload=>{if(currentPost&&payload.new.post_id===currentPost.id)loadComments()}).subscribe(s=>{if(s==='SUBSCRIBED')setStatus('Communauté connectée · nouveaux avis en direct.','connected')});}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDiscussion()});init();
 </script>
-<script src="/assets/fiche-parse.js?v=1793551363"></script>
-<script src="/assets/reviews-admin.js?v=1793551363"></script>
-<script src="/assets/site.js?v=1793551363"></script>
+<script src="/assets/fiche-parse.js?v=1793551479"></script>
+<script src="/assets/reviews-admin.js?v=1793551479"></script>
+<script src="/assets/site.js?v=1793551479"></script>
 </body>
 </html>

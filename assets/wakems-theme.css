@@ -444,7 +444,8 @@ h1 em,.sectionTitle em,.contact h2 em,.tiktokBand h2 em{font-style:italic;font-w
 .rvDetail .rvMeta .rvScore{display:inline-block;animation:wkUp .7s .25s cubic-bezier(.2,.7,.2,1) both}
 .wvBar i{animation:wkGrow 1s cubic-bezier(.2,.7,.2,1) both;transform-origin:left}
 @keyframes wkGrow{from{transform:scaleX(0)}}
-@media(prefers-reduced-motion:reduce){.rev{opacity:1;transform:none;transition:none}.motion .hero *,.mist i,.marqT,.featured img,.modal *,.wvBar i{animation:none!important}}
+/* « réduire les animations » (souvent activé par défaut sur Windows) : on garde les apparitions, on coupe seulement ce qui bouge en continu */
+@media(prefers-reduced-motion:reduce){.mist i,.featured img,.modal.open .rvDVisual img{animation:none!important}}
 /* ===== Animations, 2e série ===== */
 .readBar{position:fixed;left:0;top:0;height:2px;width:100%;background:linear-gradient(90deg,var(--accent),#C9A33A);transform-origin:left;transform:scaleX(0);z-index:80;pointer-events:none}
 .mist{translate:var(--mx,0) var(--my,0);transition:translate 1.2s cubic-bezier(.2,.7,.2,1)}
@@ -475,4 +476,4 @@ h1 em,.sectionTitle em,.contact h2 em,.tiktokBand h2 em{font-style:italic;font-w
 .modal.open .rvDText>*{animation:wkUp .6s cubic-bezier(.2,.7,.2,1) both}
 .modal.open .rvDText>*:nth-child(2){animation-delay:.05s}.modal.open .rvDText>*:nth-child(3){animation-delay:.1s}.modal.open .rvDText>*:nth-child(4){animation-delay:.15s}.modal.open .rvDText>*:nth-child(5){animation-delay:.2s}.modal.open .rvDText>*:nth-child(n+6){animation-delay:.25s}
 .modal.open .rvDVisual img{animation:wkFloat 6s ease-in-out infinite}
-@media(prefers-reduced-motion:reduce){.readBar,.sparks,.ftVisual .shine{display:none}.howItem svg *{stroke-dasharray:none;transition:none}.modal.open .rvDText>*,.modal.open .rvDVisual img{animation:none}}
+@media(prefers-reduced-motion:reduce){.sparks{opacity:.6}}
