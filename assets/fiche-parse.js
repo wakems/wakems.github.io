@@ -356,7 +356,7 @@ function noteRows(st){
 }
 function drawNotes(x,st,img,th){
   const rows=(st.notesText&&textToRows(st.notesText).length)?textToRows(st.notesText):noteRows(st);
-  return drawRowsSlide(x,st,img,th,{kicker:((st.brand||'')+(st.brand&&st.name?' · ':'')+(st.name||'')).toUpperCase(),title:st.tNotes||'Notes',rows:rows.length?rows:[{label:'NOTES',value:'Non publiées'}]});
+  return drawRowsSlide(x,st,img,th,{kicker:((st.brand||'')+(st.brand&&st.name?' · ':'')+(st.name||'')).toUpperCase(),title:st.tNotes||'Notes',rows:rows.length?rows:[{label:'TÊTE',value:'—'},{label:'CŒUR',value:'—'},{label:'FOND',value:'—'}]});
 }
 
 function perfRows(st){
@@ -514,7 +514,7 @@ function cleanNotes(s){
 }
 const NOTE_LABELS={
   top:'notes? de (?:t[êe]te|d[ée]part)|top notes?|head notes?|t[êe]te',
-  heart:'notes? de c[œo]eur|heart notes?|middle notes?|c[œo]eur|heart',
+  heart:'notes? de c(?:œ|oe)ur|heart notes?|middle notes?|c(?:œ|oe)ur|heart',
   base:'notes? de fond|base notes?|fond|base'
 };
 function parseNotes(text){
@@ -523,8 +523,8 @@ function parseNotes(text){
   ['top','heart','base'].forEach(k=>{
     let re=new RegExp('(?:^|[\\s.;|,(])(?:'+NOTE_LABELS[k]+')\\s*[:：]\\s*(.{3,220}?)(?=\\s*'+all+'\\s*[:：]|[.;|]|$)','i'),m=t.match(re);
     if(!m){
-      const multi={top:'notes? de (?:t[êe]te|d[ée]part)|top notes?|head notes?',heart:'notes? de c[œo]eur|heart notes?|middle notes?',base:'notes? de fond|base notes?'}[k];
-      const allMulti='(?:notes? de (?:t[êe]te|d[ée]part|c[œo]eur|fond)|top notes?|head notes?|heart notes?|middle notes?|base notes?)';
+      const multi={top:'notes? de (?:t[êe]te|d[ée]part)|top notes?|head notes?',heart:'notes? de c(?:œ|oe)ur|heart notes?|middle notes?',base:'notes? de fond|base notes?'}[k];
+      const allMulti='(?:notes? de (?:t[êe]te|d[ée]part|c(?:œ|oe)ur|fond)|top notes?|head notes?|heart notes?|middle notes?|base notes?)';
       re=new RegExp('(?:^|[\\s.;|,(])(?:'+multi+')\\s+(.{3,160}?)(?=\\s+'+allMulti+'|[.;|]|$)','i');m=t.match(re);
     }
     if(m){const v=cleanNotes(m[1]);if(v&&v.length>2)out[k]=v}
@@ -585,6 +585,7 @@ function parseHtml(html,pageUrl){
   if(p&&p.brand)brand=typeof p.brand==='string'?p.brand:(Array.isArray(p.brand)?(p.brand[0]&&(p.brand[0].name||p.brand[0])):p.brand.name)||'';
   brand=stripTags(brand)||meta('meta[property="product:brand"]')||meta('meta[property="og:brand"]')||meta('meta[itemprop="brand"]');
   const title=(p&&p.name)||meta('meta[property="og:title"]')||doc.title||'';
+  if(!brand){const sn=meta('meta[property="og:site_name"]');if(sn&&sn.length<40)brand=sn.replace(/\s*(?:beauty|parfums?|official|store|boutique|shop|fr|france)\s*$/i,'').trim()}
   if(!brand){const m=stripTags(title).match(/\b(?:de|by|par)\s+([A-ZÀ-Ý][^,|–—]*?)(?:,|\s+eau\b|\s+\d|$)/);if(m)brand=m[1].trim()}
   const desc=[p&&p.description,meta('meta[name="description"]'),meta('meta[property="og:description"]')].filter(Boolean).map(stripTags).join(' ');
   let img='';
@@ -595,6 +596,29 @@ function parseHtml(html,pageUrl){
   const body=bodyText(doc);
   const t=fromText(stripTags(title),desc,body);
   return Object.assign({name:cleanName(title,brand),brand:stripTags(brand),image:img,price},t);
+}
+/* boutiques Shopify : la fiche produit JSON donne la marque et la description complète (souvent avec les notes) */
+async function enrichShopify(url,r){
+  let u;try{u=new URL(url)}catch(e){return r}
+  if(!/\/products\/[^/]+/.test(u.pathname))return r;
+  if(r.brand&&(r.notesTop||r.notesHeart||r.notesBase))return r;
+  const j=u.origin+u.pathname.replace(/\/$/,'')+'.js';
+  for(const p of proxies(j)){
+    try{
+      const t=await fetchTimeout(p,false);if(!t||t[0]!=='{')continue;
+      const o=JSON.parse(t),desc=stripTags(o.description||'');
+      if(!r.brand&&o.vendor)r.brand=stripTags(o.vendor);
+      const n=parseNotes(desc);
+      if(!r.notesTop&&n.top)r.notesTop=n.top;if(!r.notesHeart&&n.heart)r.notesHeart=n.heart;if(!r.notesBase&&n.base)r.notesBase=n.base;
+      if(!r.tenue)r.tenue=parseTenue(desc);if(!r.sillage)r.sillage=parseSillage(desc);
+      if(!r.perfumer)r.perfumer=parsePerfumer(desc);
+      if(!r.conc)r.conc=detectConc(o.title||'')||detectConc(desc.slice(0,300));
+      if(n.top||n.heart||n.base){const nt=[n.top,n.heart,n.base].filter(Boolean).join(' ');const a=pickAccords(nt,desc);if(a&&a.length)r.accords=a}
+      if(!r.image&&o.featured_image)r.image=String(o.featured_image).replace(/^\/\//,'https://');
+      return r;
+    }catch(e){}
+  }
+  return r;
 }
 function parsePastedText(text){
   const body=String(text||'').replace(/\s+/g,' ').slice(0,6000);
@@ -630,5 +654,5 @@ function normalizeBlob(blob){
   });
 }
 
-return {parseHtml,fetchHtml,fetchImageBlob,normalizeBlob,cutout,pickAccords,BG_BY_ACCORD,CATS};
+return {parseHtml,enrichShopify,fetchHtml,fetchImageBlob,normalizeBlob,cutout,pickAccords,BG_BY_ACCORD,CATS};
 })();
