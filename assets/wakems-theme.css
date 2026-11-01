@@ -407,8 +407,8 @@ h1 em,.sectionTitle em,.contact h2 em,.tiktokBand h2 em{font-style:italic;font-w
 @keyframes wkUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes wkWord{from{transform:translateY(105%)}to{transform:none}}
 .hero{position:relative;isolation:isolate}
-.hero h1.split .w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .08em .22em;margin:0 -.08em -.22em}
-.hero h1.split.done .w{overflow:visible}
+.hero h1.split .w{display:inline-block;vertical-align:baseline;clip-path:inset(-.25em -.2em -.3em -.2em)}
+.hero h1.split.done .w{clip-path:none}
 .hero h1.split .w>span{display:inline-block;animation:wkWord 1s cubic-bezier(.2,.75,.15,1) both}
 .motion .hero .eyebrow{animation:wkUp .9s cubic-bezier(.2,.7,.2,1) both}
 .motion .hero p{animation:wkUp 1s .55s cubic-bezier(.2,.7,.2,1) both}
@@ -525,3 +525,6 @@ h1 em,.sectionTitle em,.contact h2 em,.tiktokBand h2 em{font-style:italic;font-w
 .qzAlt b{font-family:var(--serif);font-size:15px;display:block}.qzAlt small{font-size:11px;color:var(--muted)}
 @media(max-width:560px){.qzBest{grid-template-columns:1fr}.qzImg{max-height:240px;aspect-ratio:auto;height:220px}.qzAlt{grid-template-columns:1fr}.simRow{gap:8px}.simCard b{font-size:13px}}
 .hero .slogan{font-size:13px!important;letter-spacing:.32em!important}
+
+.heroCenter h1{max-width:min(1180px,94vw)!important;font-size:clamp(50px,8.4vw,132px)!important}
+h1 em{line-height:inherit!important}
