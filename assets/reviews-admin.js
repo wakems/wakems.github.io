@@ -49,7 +49,18 @@ function renderList(){
   if(!rows.length){$('rList').innerHTML='<p class="noteWarn">Aucun avis pour l’instant. Ajoute ton premier parfum, ou importe ta sauvegarde de fiches.</p>';return}
   $('rList').innerHTML=rows.map(r=>`<div class="rItem"><div class="rThumb" style="background:${esc(r.color||'#E9E1D6')}">${r.image_url?`<img src="${esc(r.image_url)}" alt="">`:''}</div>
     <div class="rInfo"><strong>${esc(r.name)}</strong><small>${esc(r.brand||'')} · ${fmt(r.score)}/10${r.is_published?'':' · masqué'}</small></div>
-    <div class="rActs"><button type="button" class="subtleBtn" data-edit="${esc(r.id)}">Modifier</button><button type="button" class="subtleBtn" data-toggle="${esc(r.id)}">${r.is_published?'Masquer':'Publier'}</button><button type="button" class="subtleBtn danger" data-del="${esc(r.id)}">Supprimer</button></div></div>`).join('');
+    <div class="rActs"><button type="button" class="subtleBtn${r.featured_at?' isFeat':''}" data-feat="${esc(r.id)}" title="Coup de cœur affiché sur l'accueil">${r.featured_at?'★ Coup de cœur · retirer':'Mettre en coup de cœur'}</button><button type="button" class="subtleBtn" data-edit="${esc(r.id)}">Modifier</button><button type="button" class="subtleBtn" data-toggle="${esc(r.id)}">${r.is_published?'Masquer':'Publier'}</button><button type="button" class="subtleBtn danger" data-del="${esc(r.id)}">Supprimer</button></div></div>`).join('');
+  const cur=rows.find(r=>r.featured_at);
+  $('rList').insertAdjacentHTML('afterbegin','<p class="featNow">Coup de cœur sur l’accueil : <b>'+(cur?esc(cur.name):'automatique (meilleure note)')+'</b>'+(cur?' · « retirer » pour revenir au choix automatique':' · touche « Mettre en coup de cœur » sur un parfum pour le choisir')+'</p>');
+  $('rList').querySelectorAll('[data-feat]').forEach(b=>b.addEventListener('click',async()=>{
+    const r=rows.find(x=>x.id===b.dataset.feat);if(!r)return;const c=client();b.disabled=true;
+    const off=await c.from('wakems_reviews').update({featured_at:null}).not('featured_at','is',null);
+    if(off.error){setMsg('Modification impossible : '+off.error.message);b.disabled=false;return}
+    if(!r.featured_at){const on=await c.from('wakems_reviews').update({featured_at:new Date().toISOString()}).eq('id',r.id);if(on.error){setMsg('Modification impossible : '+on.error.message);b.disabled=false;return}
+      setMsg('« '+r.name+' » est maintenant le coup de cœur de l’accueil ✓');if(!r.is_published)setMsg('« '+r.name+' » est choisi, mais il est masqué : publie-le pour qu’il s’affiche.')}
+    else setMsg('Coup de cœur : retour au choix automatique (meilleure note).');
+    load();
+  }));
   $('rList').querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>{editing=rows.find(r=>r.id===b.dataset.edit);fill(editing);$('rForm').scrollIntoView({behavior:'smooth',block:'start'})}));
   $('rList').querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',async()=>{const r=rows.find(x=>x.id===b.dataset.toggle);const {error}=await client().from('wakems_reviews').update({is_published:!r.is_published}).eq('id',r.id);if(error){setMsg('Modification impossible : '+error.message);return}load()}));
   $('rList').querySelectorAll('[data-del]').forEach(b=>armDelete(b,async()=>{

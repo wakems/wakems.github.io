@@ -123,10 +123,11 @@ function buildChips(){
 }
 function featured(){
   const el=document.getElementById('featured');if(!el||!rows.length)return;
-  const best=rows.slice().sort((a,b)=>(Number(b.score)||0)-(Number(a.score)||0)||new Date(b.created_at)-new Date(a.created_at))[0];if(!best)return;
+  const pick=rows.filter(r=>r.featured_at).sort((a,b)=>new Date(b.featured_at)-new Date(a.featured_at))[0];
+  const best=pick||rows.slice().sort((a,b)=>(Number(b.score)||0)-(Number(a.score)||0)||new Date(b.created_at)-new Date(a.created_at))[0];if(!best)return;
   const v=verdictOf(best);
   el.innerHTML=`<div class="ftVisual" style="--rv:${esc(best.color||'#C9A33A')}">${best.image_url?`<img src="${esc(best.image_url)}" alt="Flacon de ${esc(best.name)}">`:''}</div>
-    <div class="ftText"><span class="eyebrow">Coup de cœur du moment</span><span class="rvBrand">${esc(best.brand||'')}</span><h2>${esc(best.name)}</h2>
+    <div class="ftText"><span class="eyebrow">${pick?"Le coup de cœur de Wakems":"Coup de cœur du moment"}</span><span class="rvBrand">${esc(best.brand||'')}</span><h2>${esc(best.name)}</h2>
     <div class="rvMeta big">${best.score!=null?`<span class="rvScore">${fmt(best.score)}<small>/10</small></span>`:''}<span class="rvVerdict v-${v}">${VERD[v]}</span></div>
     ${(best.accords||[]).length?`<div class="rvAccords">${best.accords.map(a=>`<span>${esc(a)}</span>`).join('')}</div>`:''}
     <button type="button" class="primary" data-feat="${esc(best.id)}">Lire l'avis complet</button></div>`;

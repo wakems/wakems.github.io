@@ -445,3 +445,34 @@ h1 em,.sectionTitle em,.contact h2 em,.tiktokBand h2 em{font-style:italic;font-w
 .wvBar i{animation:wkGrow 1s cubic-bezier(.2,.7,.2,1) both;transform-origin:left}
 @keyframes wkGrow{from{transform:scaleX(0)}}
 @media(prefers-reduced-motion:reduce){.rev{opacity:1;transform:none;transition:none}.motion .hero *,.mist i,.marqT,.featured img,.modal *,.wvBar i{animation:none!important}}
+/* ===== Animations, 2e série ===== */
+.readBar{position:fixed;left:0;top:0;height:2px;width:100%;background:linear-gradient(90deg,var(--accent),#C9A33A);transform-origin:left;transform:scaleX(0);z-index:80;pointer-events:none}
+.mist{translate:var(--mx,0) var(--my,0);transition:translate 1.2s cubic-bezier(.2,.7,.2,1)}
+/* titres : le mot en italique se souligne */
+.blockHead .sectionTitle em,.contact h2 em,.tiktokBand h2 em{position:relative;display:inline-block}
+.blockHead .sectionTitle em::after,.contact h2 em::after,.tiktokBand h2 em::after{content:"";position:absolute;left:2%;right:2%;bottom:.04em;height:.06em;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform 1s .35s cubic-bezier(.2,.75,.15,1)}
+.rev.in .sectionTitle em::after,.contact.in h2 em::after,.tiktokBand.in h2 em::after,.calm .sectionTitle em::after{transform:scaleX(1)}
+/* icônes « Comment ça marche » qui se dessinent */
+.howItem svg *{stroke-dasharray:220;stroke-dashoffset:220;transition:stroke-dashoffset 1.6s .2s cubic-bezier(.4,0,.2,1)}
+.howItem.in svg *,.calm .howItem svg *{stroke-dashoffset:0}
+.howItem .howN{display:inline-block;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+@media(hover:hover){.howItem:hover .howN{transform:translateX(6px)}}
+/* boutons : remplissage doré au survol */
+.primary,a.primary{background-image:linear-gradient(var(--accent),var(--accent));background-repeat:no-repeat;background-size:0% 100%;transition:background-size .45s cubic-bezier(.2,.7,.2,1),color .3s}
+@media(hover:hover){.primary:hover,a.primary:hover{background-size:100% 100%}}
+.ghost{transition:background .35s,color .35s}
+/* coup de cœur : reflet et particules */
+.ftVisual{position:relative;overflow:hidden}
+.ftVisual .shine{position:absolute;inset:-20% auto -20% -60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-14deg);animation:wkShine 7s ease-in-out 1.5s infinite;pointer-events:none}
+@keyframes wkShine{0%{left:-60%}35%,100%{left:130%}}
+.sparks{position:absolute;inset:0;pointer-events:none}
+.sparks i{position:absolute;bottom:-10px;width:calc(6px*var(--s,1));height:calc(6px*var(--s,1));border-radius:50%;background:radial-gradient(circle,#fff8e6 0%,rgba(255,236,190,.6) 40%,transparent 70%);animation:wkRise linear infinite;opacity:0}
+@keyframes wkRise{0%{transform:translate(0,0);opacity:0}15%{opacity:.9}100%{transform:translate(18px,-420px);opacity:0}}
+/* coup de cœur choisi dans l'espace créateur */
+.featNow{margin:0 0 12px;font-size:13px;color:var(--muted)}.featNow b{color:var(--ink)}
+.subtleBtn.isFeat{background:var(--ink);color:var(--paper)!important;border-color:var(--ink)}
+/* fiche parfum : les lignes apparaissent l'une après l'autre */
+.modal.open .rvDText>*{animation:wkUp .6s cubic-bezier(.2,.7,.2,1) both}
+.modal.open .rvDText>*:nth-child(2){animation-delay:.05s}.modal.open .rvDText>*:nth-child(3){animation-delay:.1s}.modal.open .rvDText>*:nth-child(4){animation-delay:.15s}.modal.open .rvDText>*:nth-child(5){animation-delay:.2s}.modal.open .rvDText>*:nth-child(n+6){animation-delay:.25s}
+.modal.open .rvDVisual img{animation:wkFloat 6s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.readBar,.sparks,.ftVisual .shine{display:none}.howItem svg *{stroke-dasharray:none;transition:none}.modal.open .rvDText>*,.modal.open .rvDVisual img{animation:none}}
