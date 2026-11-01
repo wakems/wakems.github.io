@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Wakems">
 
 <meta name="description" content="Wakems, la communauté des passionnés de parfums : découvre, évalue et partage.">
-<meta property="og:title" content="Wakems · La communauté des passionnés de parfums">
+<meta property="og:title" content="Wakems — Le parfum se partage">
 <meta property="og:description" content="Découvre, évalue et partage tes parfums avec une communauté passionnée.">
 <meta property="og:image" content="https://wakems.github.io/assets/og.png">
 <meta property="og:type" content="website">
@@ -64,7 +64,7 @@ body.creator-mode .creatorHomeLink { display:inline-flex; }
 })();
 </script>
 <link rel="preload" href="/assets/fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/wakems-theme.css?v=1793551880">
+<link rel="stylesheet" href="/assets/wakems-theme.css?v=1793552382">
 </head>
 <body class="creator-mode">
 <div class="shell">
@@ -143,7 +143,7 @@ body.creator-mode .creatorHomeLink { display:inline-flex; }
       </div>
     </div>
   </section>
-  <footer class="footer"><span class="footBrand"><img class="footLogo" src="/assets/logo.png" alt="Wakems" width="146" height="58"><span class="footTag">Découvre · Évalue · Partage</span></span><span class="footLinks"><a href="mailto:mathwakems@gmail.com">mathwakems@gmail.com</a><a class="tiktokHref" href="https://www.tiktok.com/@mathwake" target="_blank" rel="noopener">TikTok</a><a href="/">Accueil</a><span>© Wakems</span></span></footer>
+  <footer class="footer"><span class="footBrand"><img class="footLogo" src="/assets/logo.png" alt="Wakems" width="146" height="58"><span class="footTag">Le parfum se partage.</span></span><span class="footLinks"><a href="mailto:mathwakems@gmail.com">mathwakems@gmail.com</a><a class="tiktokHref" href="https://www.tiktok.com/@mathwake" target="_blank" rel="noopener">TikTok</a><a href="/">Accueil</a><span>© Wakems</span></span></footer>
 </div>
 
 <div class="modal" id="discussionModal" role="dialog" aria-modal="true" aria-labelledby="discussionTitle">
@@ -223,8 +223,8 @@ async function init(){if(localStorage.getItem('mp-nickname'))$('nickname').value
  inviteFlow=new URLSearchParams(window.location.hash.replace(/^#/,'' )).get('type')==='invite';sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);setStatus('Connexion à la communauté…');await loadPosts();await checkAdmin();sb.auth.onAuthStateChange(()=>setTimeout(checkAdmin,0));liveChannel=sb.channel('community-live').on('postgres_changes',{event:'*',schema:'public',table:'community_posts'},()=>loadPosts()).on('postgres_changes',{event:'INSERT',schema:'public',table:'community_comments'},payload=>{if(currentPost&&payload.new.post_id===currentPost.id)loadComments()}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'community_comments'},payload=>{if(currentPost&&payload.new.post_id===currentPost.id)loadComments()}).subscribe(s=>{if(s==='SUBSCRIBED')setStatus('Communauté connectée · nouveaux avis en direct.','connected')});}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDiscussion()});init();
 </script>
-<script src="/assets/fiche-parse.js?v=1793551880"></script>
-<script src="/assets/reviews-admin.js?v=1793551880"></script>
-<script src="/assets/site.js?v=1793551880"></script>
+<script src="/assets/fiche-parse.js?v=1793552382"></script>
+<script src="/assets/reviews-admin.js?v=1793552382"></script>
+<script src="/assets/site.js?v=1793552382"></script>
 </body>
 </html>

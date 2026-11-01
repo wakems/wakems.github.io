@@ -524,3 +524,4 @@ h1 em,.sectionTitle em,.contact h2 em,.tiktokBand h2 em{font-style:italic;font-w
 .qzMini{--rv:#E9E1D6;flex:0 0 46px;height:46px;display:flex;align-items:center;justify-content:center;background:var(--rv)}.qzMini img{max-height:80%;max-width:70%;object-fit:contain}
 .qzAlt b{font-family:var(--serif);font-size:15px;display:block}.qzAlt small{font-size:11px;color:var(--muted)}
 @media(max-width:560px){.qzBest{grid-template-columns:1fr}.qzImg{max-height:240px;aspect-ratio:auto;height:220px}.qzAlt{grid-template-columns:1fr}.simRow{gap:8px}.simCard b{font-size:13px}}
+.hero .slogan{font-size:13px!important;letter-spacing:.32em!important}

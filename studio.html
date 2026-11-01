@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Studio">
 <meta name="theme-color" content="#F1EEE9">
-<script src="/config.js?v=1793551880"></script>
+<script src="/config.js?v=1793552382"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -171,6 +171,15 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .edHead #saveState{margin-left:auto}
 body.edLock{overflow:hidden}
 @media(max-width:640px){#edSec.open{padding:0}#edSec.open>.edHead,#edSec.open>.main{border-radius:0}}
+
+.goutCard{border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 10px;background:var(--field)}
+.goutHead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.goutHead input[type=text]{flex:1;min-width:160px;font-weight:700}
+.goutHead input[type=color]{width:44px;height:40px;padding:2px;border-radius:8px}
+.goutPhoto{cursor:pointer;border:1px dashed var(--line);border-radius:8px;padding:9px 12px;font-size:14px;white-space:nowrap}
+.goutDel{font-size:13px}
+.goutPicks{margin-top:8px}.goutPicks .chips{margin:6px 0 8px}.goutPicks select{max-width:100%}
+.chip.txt.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 </style>
 </head>
 <body>
@@ -223,6 +232,7 @@ body.edLock{overflow:hidden}
     <div class="seg" role="group" aria-label="Type de carrousel">
       <button id="modeRank" type="button" aria-pressed="true">Classement (plusieurs parfums)</button>
       <button id="modePack" type="button" aria-pressed="false">Un seul parfum</button>
+      <button id="modeGout" type="button" aria-pressed="false">Si tu aimes… (par goût)</button>
     </div>
 
     <div class="row">
@@ -239,6 +249,19 @@ body.edLock{overflow:hidden}
       </div>
       <div class="btns"><button id="sortAsc" type="button">Trier du moins bon au meilleur</button><button id="sortDesc" type="button">Trier du meilleur au moins bon</button></div>
       <label class="chk"><input id="ctaEnd" type="checkbox"> Ajouter la page « Suivre » à la fin</label>
+    </div>
+
+    <div id="goutPanel" class="panel" hidden>
+      <p class="hint">Une page par goût (safran, ambre, vanille…) avec 3 parfums de ta liste, comme « If you like… you must try ». Ajoute une photo de l’ingrédient pour le haut de la page.</p>
+      <div id="goutList"></div>
+      <div class="btns"><button type="button" id="goutAdd">+ Ajouter un goût</button></div>
+      <div class="three">
+        <div class="row"><label for="gTop">Petit titre</label><input id="gTop" type="text" autocomplete="off"></div>
+        <div class="row"><label for="gCard">Titre de la carte</label><input id="gCard" type="text" autocomplete="off"></div>
+        <div class="row"><label for="gEndWord">Page finale : grand mot</label><input id="gEndWord" type="text" autocomplete="off"></div>
+      </div>
+      <div class="row"><label for="gEndSub">Page finale : sous-titre</label><input id="gEndSub" type="text" autocomplete="off"></div>
+      <label class="chk"><input id="gEnd" type="checkbox"> Ajouter la page finale (les goûts côte à côte)</label>
     </div>
 
     <div id="packPanel" class="panel" hidden>
@@ -786,6 +809,76 @@ function drawTopCover(x,t,handle,figs,th){
   return th.topBg;
 }
 
+/* ---------- carrousel « Si tu aimes… » (un goût, 3 parfums) ---------- */
+const GOUT_ACCENTS=[['safran','#9B2C55'],['ambre','#9A5418'],['amber','#9A5418'],['vanill','#A0672A'],['tonka','#8A5A2B'],['caramel','#A35A1E'],['cafe','#5E3B26'],['chocolat','#5A3424'],['cacao','#5A3424'],['oud','#4A3226'],['bois','#5B4632'],['santal','#7A5A3A'],['cedre','#5B4A36'],['vetiver','#4F5B3A'],['patchouli','#4D3B2C'],['cuir','#4A2E22'],['tabac','#6A4426'],['encens','#5E5560'],['rose','#B23A5E'],['jasmin','#8C7A2E'],['iris','#6A5A9B'],['violette','#6B3F8E'],['lavande','#6B5BA8'],['fleur d','#C27A3A'],['tubereuse','#9A7A55'],['musc','#7D7480'],['poudr','#A3708F'],['berga','#B08A12'],['citron','#B39A0E'],['agrume','#C4721A'],['orange','#C4621A'],['mandarine','#C4621A'],['pamplemousse','#C24E4E'],['menthe','#2F7A5A'],['the','#5F7A3A'],['marin','#2B6C9B'],['aquat','#2B6C9B'],['cerise','#A3223A'],['framboise','#A3223A'],['fraise','#B3263F'],['peche','#C46A3A'],['pomme','#6E9A2E'],['poire','#8A9A2E'],['coco','#8A7A62'],['ananas','#B39A0E'],['miel','#B07A12'],['amande','#9A7A55'],['praline','#8A5A2B'],['cannelle','#8E4A22'],['cardamome','#5F7A3A'],['poivre','#7A2E2E'],['gourmand','#A35A1E'],['frais','#2B6C9B'],['epic','#8E3A22'],['fum','#3D3A3A']];
+function goutAccent(word){const n=norm(word||'');for(const [k,c] of GOUT_ACCENTS){if(n.indexOf(k)!==-1)return c}return '#7A5A3B'}
+function coverInto(x,img,dx,dy,dw,dh,ax,ay){
+  const iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,sc=Math.max(dw/iw,dh/ih),sw=dw/sc,sh=dh/sc;
+  const sx=(iw-sw)*(ax==null?.5:ax),sy=(ih-sh)*(ay==null?.5:ay);x.drawImage(img,sx,sy,sw,sh,dx,dy,dw,dh);
+}
+const ARCH=w=>s=>w+' '+s+'px Archivo, Poppins, '+SANS;
+const ANTON=s=>s+'px Anton, Impact, '+SANS;
+function goutBottle(x,fig,cx,bottom,maxW,maxH){
+  const f=fit(fig,maxW,maxH),l=Math.round(cx-f.width/2),t=Math.round(bottom-f.height);
+  const sg=x.createRadialGradient(0,0,0,0,0,1);sg.addColorStop(0,'rgba(0,0,0,.28)');sg.addColorStop(1,'rgba(0,0,0,0)');
+  x.save();x.translate(cx,bottom+6);x.scale(f.width*.62,16);x.fillStyle=sg;x.beginPath();x.arc(0,0,1,0,Math.PI*2);x.fill();x.restore();
+  x.drawImage(f,l,t);return {l,t,w:f.width,h:f.height};
+}
+/* g = {word,color}, items = [{name,brand,fig}], photo = image de l'ingrédient (ou null), o = {top,card,handle} */
+function drawGout(x,g,items,photo,o){
+  const acc=/^#[0-9a-f]{6}$/i.test(g.color||'')?g.color:goutAccent(g.word),bg=mix(acc,'#ffffff',.86),ink=mix(acc,'#000000',.32);
+  x.clearRect(0,0,W,H);x.fillStyle=bg;x.fillRect(0,0,W,H);
+  if(photo){
+    const c=newCanvas(W,760),cx=c.getContext('2d');coverInto(cx,photo,300,0,W-300,760,.6,.45);
+    cx.globalCompositeOperation='destination-in';
+    let gr=cx.createLinearGradient(300,0,640,0);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,1)');cx.fillStyle=gr;cx.fillRect(0,0,W,760);
+    gr=cx.createLinearGradient(0,470,0,760);gr.addColorStop(0,'rgba(0,0,0,1)');gr.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=gr;cx.fillRect(0,0,W,760);
+    x.drawImage(c,0,0);
+  }else{
+    const gl=x.createRadialGradient(860,240,10,860,240,560);gl.addColorStop(0,rgba(acc,.30));gl.addColorStop(1,rgba(acc,0));x.fillStyle=gl;x.fillRect(0,0,W,760);
+  }
+  const top=(o.top||'SI TU AIMES…').toUpperCase(),word=(g.word||'').toUpperCase();
+  x.font=ARCH(800)(40);put(x,top,104,250,40*.06,'left',ink);
+  const maxW=photo?640:880,ws=fitBox(x,word,ANTON,maxW,190,0,260,60),ch=capH(x,ANTON,ws);
+  x.font=ANTON(ws);put(x,word,100,276+ch+6,0,'left',ink);
+  /* carte givrée */
+  const cy=640,chh=650;
+  x.save();x.shadowColor='rgba(0,0,0,.10)';x.shadowBlur=40;x.shadowOffsetY=10;rr(x,56,cy,968,chh,48);x.fillStyle='rgba(255,255,255,.62)';x.fill();x.restore();
+  rr(x,56,cy,968,chh,48);x.strokeStyle='rgba(255,255,255,.9)';x.lineWidth=3;x.stroke();
+  x.fillStyle='rgba(0,0,0,.18)';rr(x,W/2-34,cy+20,68,8,4);x.fill();
+  const card=(o.card||'Tu dois tester');x.font=ARCH(800)(54);put(x,card,126,cy+122,0,'left','#151515');
+  const tw=x.measureText(card).width;x.strokeStyle='#151515';x.lineWidth=7;x.lineCap='round';x.lineJoin='round';x.beginPath();x.moveTo(126+tw+24,cy+82);x.lineTo(126+tw+44,cy+102);x.lineTo(126+tw+24,cy+122);x.stroke();
+  const n=Math.max(1,Math.min(3,items.length)),slotW=968/3,start=56+(968-slotW*n)/2;
+  items.slice(0,3).forEach((it,i)=>{
+    const cx=start+slotW*(i+.5);
+    goutBottle(x,it.fig||placeholder(it.name,it.brand,mix(acc,'#ffffff',.3)),cx,cy+446,250,290);
+    x.font=ARCH(800)(32);const nm=(it.name||'').toUpperCase();const lines=wrapTxt(x,nm,slotW-30,2);
+    lines.forEach((l,k)=>put(x,l,cx,cy+500+k*36,0,'center','#151515'));
+    x.font=ARCH(500)(26);const br=wrapTxt(x,it.brand||'',slotW-30,1)[0]||'';put(x,br,cx,cy+500+lines.length*36+4,0,'center','#6b6b6b');
+  });
+  if(o.handle){x.font=ARCH(800)(28);put(x,o.handle.toUpperCase(),W/2,cy+chh-28,28*.1,'center','#151515')}
+  return bg;
+}
+/* page finale : FOLLOW, pour les prochaines notes, 3 panneaux */
+function drawGoutEnd(x,panels,o){
+  const bg='#FBFAF8';x.clearRect(0,0,W,H);x.fillStyle=bg;x.fillRect(0,0,W,H);
+  if(o.handle){x.font=ARCH(800)(30);put(x,o.handle.toUpperCase(),W/2,150,30*.1,'center','#151515')}
+  const word=(o.word||'FOLLOW').toUpperCase(),ws=fitBox(x,word,ANTON,900,230,0,330,60),ch=capH(x,ANTON,ws);
+  x.font=ANTON(ws);put(x,word,W/2,200+ch+20,0,'center','#1a1a1a');
+  x.font=ARCH(700)(46);put(x,o.sub||'pour les prochaines notes',W/2,200+ch+96,0,'center','#1a1a1a');
+  const n=Math.max(1,Math.min(3,panels.length)),gap=14,pw=(900-gap*(n-1))/n,py=Math.max(560,200+ch+150),ph=H-py-90;
+  panels.slice(0,3).forEach((p,i)=>{
+    const px=90+i*(pw+gap),acc=/^#[0-9a-f]{6}$/i.test(p.color||'')?p.color:goutAccent(p.word);
+    x.save();rr(x,px,py,pw,ph,22);x.clip();
+    x.fillStyle=mix(acc,'#ffffff',.84);x.fillRect(px,py,pw,ph);
+    if(p.photo)coverInto(x,p.photo,px,py,pw,ph*.62,.5,.5);
+    const fd=x.createLinearGradient(0,py+ph*.38,0,py+ph*.66);fd.addColorStop(0,rgba(mix(acc,'#ffffff',.84),0));fd.addColorStop(1,rgba(mix(acc,'#ffffff',.84),1));x.fillStyle=fd;x.fillRect(px,py,pw,ph);
+    if(p.fig)goutBottle(x,p.fig,px+pw/2,py+ph-26,pw*.72,ph*.62);
+    x.restore();
+  });
+  return bg;
+}
+
 const SLIDE_DEFS=[
  {id:'cover',label:'Couverture',draw:drawCoverNew},
  {id:'info',label:'Infos',draw:drawInfo},
@@ -1033,7 +1126,7 @@ const pad=n=>(n<10?'0':'')+n;
 /* ---------- réglages ---------- */
 const S=(function(){
   const d={handle:'MATHWAKE',theme:'jus',dur:3,word:'NEW',ctaTitle:'Toutes les sorties',ctaTag:'Les nouveautés, testées avant de les porter',ctaBtn:'+ Suivre',
-    mode:'rank',ctaEnd:true,c1:'THE BEST',c2:'2026',c3:'FRAGRANCES',packId:'',types:{cover:true,info:true,notes:true,perf:true,avis:true,verdict:true,fiche:true,cta:true}};
+    mode:'rank',ctaEnd:true,gouts:[],gTop:'SI TU AIMES…',gCard:'Tu dois tester',gEnd:true,gEndWord:'FOLLOW',gEndSub:'pour les prochaines notes',c1:'THE BEST',c2:'2026',c3:'FRAGRANCES',packId:'',types:{cover:true,info:true,notes:true,perf:true,avis:true,verdict:true,fiche:true,cta:true}};
   try{const j=JSON.parse(localStorage.getItem('fp-settings')||'{}');Object.assign(d,j);d.types=Object.assign({cover:true,info:true,notes:true,perf:true,avis:true,verdict:true,fiche:true,cta:true},j.types||{})}catch(e){}
   return d;
 })();
@@ -1275,6 +1368,7 @@ if(!libView.mode)libView.mode='fam';if(!libView.open)libView.open={};
 function saveLibView(){try{localStorage.setItem('fp-libview',JSON.stringify(libView))}catch(e){}}
 let libQuery='';
 function renderLib(){
+  if(S.mode==='gout'&&!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#goutList')))setTimeout(renderGouts,0);
   const list=$('libList');list.textContent='';rows.clear();
   const items=ordered(),q=norm(libQuery.trim());
   const shown=q?items.filter(v=>norm([v.name,v.brand,(v.accords||[]).join(' '),familyOf(v)].join(' ')).includes(q)):items;
@@ -1490,12 +1584,64 @@ $('impf').addEventListener('change',async e=>{
 let capDirty=false;
 function setMode(m){
   S.mode=m;saveSettings();
-  $('modeRank').setAttribute('aria-pressed',m==='rank'?'true':'false');$('modePack').setAttribute('aria-pressed',m==='pack'?'true':'false');
-  $('rankPanel').hidden=m!=='rank';$('packPanel').hidden=m!=='pack';
+  $('modeRank').setAttribute('aria-pressed',m==='rank'?'true':'false');$('modePack').setAttribute('aria-pressed',m==='pack'?'true':'false');$('modeGout').setAttribute('aria-pressed',m==='gout'?'true':'false');
+  $('rankPanel').hidden=m!=='rank';$('packPanel').hidden=m!=='pack';$('goutPanel').hidden=m!=='gout';if(m==='gout')renderGouts();
   capDirty=false;scheduleStrip();
 }
 $('modeRank').addEventListener('click',()=>setMode('rank'));
 $('modePack').addEventListener('click',()=>setMode('pack'));
+$('modeGout').addEventListener('click',()=>setMode('gout'));
+/* ---------- mode « Si tu aimes… » ---------- */
+if(!Array.isArray(S.gouts))S.gouts=[];
+const goutStem=w=>{const n=norm(w||'').trim();return n.length>5?n.slice(0,n.length-1):n};
+function goutMatches(word){
+  const st=goutStem(word);if(st.length<3)return [];
+  return ordered().filter(v=>norm([v.notesTop,v.notesHeart,v.notesBase,v.notesText,(v.accords||[]).join(' '),v.name].join(' ')).indexOf(st)!==-1);
+}
+function goutChanged(){saveSettings();capDirty=false;scheduleStrip()}
+function renderGouts(){
+  const box=$('goutList');box.textContent='';
+  if(!S.gouts.length){const p=document.createElement('p');p.className='hint';p.textContent='Ajoute ton premier goût : par exemple « Safran ».';box.appendChild(p)}
+  S.gouts.forEach((g,gi)=>{
+    const card=document.createElement('div');card.className='goutCard';
+    const head=document.createElement('div');head.className='goutHead';
+    const w=document.createElement('input');w.type='text';w.value=g.word||'';w.placeholder='Le goût (ex. Safran)';w.setAttribute('aria-label','Goût');
+    const col=document.createElement('input');col.type='color';col.value=/^#[0-9a-f]{6}$/i.test(g.color||'')?g.color:goutAccent(g.word);col.title='Couleur de la page';col.setAttribute('aria-label','Couleur de la page');
+    const ph=document.createElement('label');ph.className='goutPhoto';ph.innerHTML='<span>'+(g.photoId?'Photo ✓ (changer)':'+ Photo de l’ingrédient')+'</span>';
+    const fi=document.createElement('input');fi.type='file';fi.accept='image/*';fi.hidden=true;ph.appendChild(fi);
+    const del=document.createElement('button');del.type='button';del.className='goutDel';del.textContent='Supprimer';
+    head.append(w,col,ph,del);card.appendChild(head);
+    const picks=document.createElement('div');picks.className='goutPicks';card.appendChild(picks);
+    const drawPicks=()=>{
+      picks.textContent='';
+      const m=goutMatches(g.word),ids=new Set(m.map(v=>v.id));
+      (g.picks||[]).forEach(id=>{if(!ids.has(id)){const v=lib.find(x=>x.id===id);if(v){m.unshift(v);ids.add(id)}}});
+      const lab=document.createElement('p');lab.className='hint';
+      lab.textContent=!g.word?'Écris un goût pour voir les parfums qui le contiennent.':m.length?'Choisis jusqu’à 3 parfums ('+(g.picks||[]).length+'/3) :':'Aucun parfum de ta liste ne contient ce goût. Ajoute-en un ci-dessous.';
+      picks.appendChild(lab);
+      const row=document.createElement('div');row.className='chips';
+      m.forEach(v=>{const b=document.createElement('button');b.type='button';b.className='chip txt'+((g.picks||[]).includes(v.id)?' on':'');b.setAttribute('aria-pressed',(g.picks||[]).includes(v.id)?'true':'false');
+        b.textContent=(v.name||'Sans nom')+(v.brand?' · '+v.brand:'');
+        b.addEventListener('click',()=>{g.picks=g.picks||[];const k=g.picks.indexOf(v.id);if(k>-1)g.picks.splice(k,1);else{if(g.picks.length>=3)g.picks.shift();g.picks.push(v.id)}drawPicks();goutChanged()});
+        row.appendChild(b)});
+      picks.appendChild(row);
+      const sel=document.createElement('select');sel.setAttribute('aria-label','Ajouter un autre parfum');
+      const o0=document.createElement('option');o0.value='';o0.textContent='+ Ajouter un autre parfum de ma liste';sel.appendChild(o0);
+      ordered().filter(v=>!ids.has(v.id)).forEach(v=>{const o=document.createElement('option');o.value=v.id;o.textContent=(v.name||'Sans nom')+(v.brand?' · '+v.brand:'');sel.appendChild(o)});
+      sel.addEventListener('change',()=>{if(!sel.value)return;g.picks=g.picks||[];if(g.picks.length>=3)g.picks.shift();g.picks.push(sel.value);drawPicks();goutChanged()});
+      picks.appendChild(sel);
+    };
+    drawPicks();
+    let wt=null;w.addEventListener('input',()=>{g.word=w.value.trim();if(!g.colorSet)col.value=goutAccent(g.word);clearTimeout(wt);wt=setTimeout(()=>{if(!(g.picks||[]).length)g.picks=goutMatches(g.word).slice(0,3).map(v=>v.id);drawPicks();goutChanged()},350)});
+    col.addEventListener('input',()=>{g.color=col.value;g.colorSet=true;goutChanged()});
+    fi.addEventListener('change',async()=>{const f=fi.files&&fi.files[0];fi.value='';if(!f)return;try{const b=await normalizeBlob(f),pid='g'+uid();await dbPut('photos',{id:pid,blob:b});g.photoId=pid;ph.firstChild.textContent='Photo ✓ (changer)';goutChanged()}catch(e){ph.firstChild.textContent='Image illisible, essaie un JPG'}});
+    del.addEventListener('click',()=>{S.gouts.splice(gi,1);renderGouts();goutChanged()});
+    box.appendChild(card);
+  });
+}
+$('goutAdd').addEventListener('click',()=>{S.gouts.push({id:uid(),word:'',color:'',photoId:null,picks:[]});renderGouts();saveSettings();const ins=$('goutList').querySelectorAll('.goutHead input[type=text]');if(ins.length)ins[ins.length-1].focus()});
+[['gTop','SI TU AIMES…'],['gCard','Tu dois tester'],['gEndWord','FOLLOW'],['gEndSub','pour les prochaines notes']].forEach(([id,def])=>{const el=$(id);el.value=S[id]||'';el.placeholder=def;el.addEventListener('input',()=>{S[id]=el.value;goutChanged()})});
+$('gEnd').checked=S.gEnd!==false;$('gEnd').addEventListener('change',()=>{S.gEnd=$('gEnd').checked;goutChanged()});
 const chipBox=$('themeChips');
 THEMES.forEach(t=>{
   const th=makeTheme(t.id,DEFAULT_BG),b=document.createElement('button');b.type='button';b.className='chip';b.dataset.t=t.id;
@@ -1570,6 +1716,12 @@ $('word').addEventListener('input',()=>{S.word=$('word').value.trim()||'NEW';sav
 
 /* ---------- pages à produire ---------- */
 function buildSpecs(){
+  if(S.mode==='gout'){
+    const gs=S.gouts.filter(g=>g.word&&(g.picks||[]).some(id=>lib.some(v=>v.id===id)));
+    const sp=gs.map(g=>({type:'gout',g,label:'Si tu aimes '+g.word}));
+    if(sp.length&&S.gEnd!==false)sp.push({type:'goutEnd',label:'Page finale'});
+    return sp;
+  }
   if(S.mode==='rank'){
     const items=included();if(!items.length)return [];
     const sp=[{type:'top',label:'Couverture'}];
@@ -1582,7 +1734,15 @@ function buildSpecs(){
   SLIDE_DEFS.forEach(d=>{if(!S.types[d.id])return;if(d.id==='avis'&&!v.avis)return;sp.push({type:d.id,v,label:d.label})});
   return sp;
 }
+async function goutItems(g){
+  const out=[];for(const id of (g.picks||[])){const v=lib.find(z=>z.id===id);if(!v)continue;const im=await getImg(v.photoId);out.push({name:v.name,brand:v.brand,fig:im?cutFor(im,v.tol||40):null})}return out;
+}
 async function drawSpec(x,sp){
+  if(sp.type==='gout')return drawGout(x,sp.g,await goutItems(sp.g),await getImg(sp.g.photoId),{top:S.gTop||'SI TU AIMES…',card:S.gCard||'Tu dois tester',handle:S.handle});
+  if(sp.type==='goutEnd'){
+    const panels=[];for(const g of S.gouts.filter(g=>g.word).slice(0,3)){const it=await goutItems(g);panels.push({word:g.word,color:g.color,photo:await getImg(g.photoId),fig:it[0]&&(it[0].fig||placeholder(it[0].name,it[0].brand,'#cccccc'))})}
+    return drawGoutEnd(x,panels,{word:S.gEndWord||'FOLLOW',sub:S.gEndSub||'pour les prochaines notes',handle:S.handle});
+  }
   if(sp.type==='top'){
     const items=included(),figs=[];
     for(const v of items.filter(z=>z.photoId).slice(0,5)){const im=await getImg(v.photoId);if(im)figs.push(cutFor(im,v.tol||40))}
@@ -1596,7 +1756,7 @@ function scheduleStrip(){clearTimeout(stripTimer);stripTimer=setTimeout(renderSt
 async function renderStrip(){
   if(!fontsOK||!db)return;
   const tok=++stripTok,specs=buildSpecs(),strip=$('strip');
-  if(!specs.length){strip.textContent='';const p=document.createElement('p');p.className='hint';p.textContent=S.mode==='rank'?'Coche au moins un parfum dans la liste.':'Ajoute un parfum pour voir les pages.';strip.appendChild(p);updateCaption();return}
+  if(!specs.length){strip.textContent='';const p=document.createElement('p');p.className='hint';p.textContent=S.mode==='rank'?'Coche au moins un parfum dans la liste.':S.mode==='gout'?'Ajoute un goût et choisis ses parfums.':'Ajoute un parfum pour voir les pages.';strip.appendChild(p);updateCaption();return}
   const scratch=newCanvas(W,H),sx=scratch.getContext('2d'),figs=[];
   for(const sp of specs.slice(0,14)){
     await drawSpec(sx,sp);if(tok!==stripTok)return;
@@ -1614,7 +1774,7 @@ async function renderStrip(){
 
 /* ---------- modifier le texte d'une image depuis la partie 3 ---------- */
 let qeSpecs=[],qeSel=null,qeIdx=-1,qeT=null;
-const qeKey=sp=>sp.type+'|'+(sp.v?sp.v.id:'');
+const qeKey=sp=>sp.type+'|'+(sp.v?sp.v.id:sp.g?sp.g.id:'');
 const QE={
   top:{t:'Couverture du classement',f:[['c1','Titre ligne 1'],['c2','Ligne 2'],['c3','Ligne 3']]},
   cover:{t:'Couverture',f:[['cWord','Grand mot (vide = mot choisi plus haut)'],['name','Nom du parfum'],['brand','Marque']]},
@@ -1624,6 +1784,8 @@ const QE={
   avis:{t:'Page Mon avis',f:[['tAvis','Titre (vide = « Mon avis »)'],['avis','Mon avis','ta',6]]},
   verdict:{t:'Page Verdict',f:[['vWord','Grand mot (vide = SKIP / MAYBE / MUST TRY)'],['verdictSel','Verdict','sel'],['note','Note /10']]},
   fiche:{t:'Fiche',f:[['name','Nom du parfum'],['brand','Marque'],['note','Note /10'],['a1','Accord 1'],['a2','Accord 2'],['a3','Accord 3']]},
+  gout:{t:'Page Si tu aimes',f:[['gTop','Petit titre (pour toutes les pages)'],['gCard','Titre de la carte'],['handle','Ton pseudo']]},
+  goutEnd:{t:'Page finale',f:[['gEndWord','Grand mot'],['gEndSub','Sous-titre'],['handle','Ton pseudo']]},
   cta:{t:'Page Suivre',f:[['ctaTitle','Titre'],['ctaBtn','Bouton'],['ctaTag','Phrase sous le bouton'],['handle','Ton pseudo']]}
 };
 async function qeOpen(i){
@@ -1633,7 +1795,7 @@ async function qeOpen(i){
   const own=sp.type!=='top'&&sp.type!=='cta';
   if(own&&sp.v&&cur.id!==sp.v.id)await openFiche(sp.v.id,false);
   $('qeTitle').textContent=def.t+(own&&sp.v?' · '+(sp.v.name||'sans nom'):'');
-  $('qeHint').textContent=sp.type==='cta'||sp.type==='top'?'Ce texte est commun à toutes tes vidéos.':'Les changements sont enregistrés dans la fiche du parfum.';
+  $('qeHint').textContent=sp.type==='cta'||sp.type==='top'||!sp.v?'Ce texte est commun à toutes tes vidéos.':'Les changements sont enregistrés dans la fiche du parfum.';
   const box=$('qeFields');box.textContent='';
   def.f.forEach(([id,label,kind,rows])=>{
     const src=$(id);if(!src)return;
@@ -1666,6 +1828,11 @@ $('qeNext').addEventListener('click',()=>qeOpen(qeIdx+1));
 /* ---------- légende ---------- */
 function tagify(s){return norm(s||'').replace(/[^a-z0-9]+/g,'')}
 function makeCaption(){
+  if(S.mode==='gout'){
+    const gs=S.gouts.filter(g=>g.word);if(!gs.length)return '';
+    const lines=gs.map(g=>'✨ '+g.word+' : '+(g.picks||[]).map(id=>lib.find(v=>v.id===id)).filter(Boolean).map(v=>v.name+(v.brand?' ('+v.brand+')':'')).join(', '));
+    return 'Si tu aimes '+gs.map(g=>g.word.toLowerCase()).join(', ')+'… tu dois tester 👇\n\n'+lines.join('\n')+'\n\nTu veux quelle note ensuite ? Dis-moi en commentaire 👇\n\n'+gs.map(g=>'#'+tagify(g.word)).join(' ')+' #parfum #parfumtiktok #fragrancetok #perfume #fyp';
+  }
   if(S.mode==='rank'){
     const items=included(),title=[S.c1,S.c2,S.c3].map(t=>(t||'').trim()).filter(Boolean).join(' ');
     const rows=items.map((v,i)=>(i+1)+'. '+(v.name||'Sans nom')+(v.brand?' ('+v.brand+')':'')+' : '+(fmtNote(v.note)||'?'));
@@ -1701,7 +1868,8 @@ async function buildSlides(msg){
     if(sp.v&&!sp.v.photoId)miss.add(sp.v.id);
     if(sp.type==='top'&&included().some(v=>!v.photoId))included().forEach(v=>{if(!v.photoId)miss.add(v.id)});
     let name;
-    if(S.mode==='rank')name=sp.type==='top'?'00-couverture.png':sp.type==='cta'?'99-suivre.png':pad(i)+'-'+slug(sp.v.name)+'.png';
+    if(S.mode==='gout')name=pad(i+1)+'-'+(sp.g?slug(sp.g.word):'suivre')+'.png';
+    else if(S.mode==='rank')name=sp.type==='top'?'00-couverture.png':sp.type==='cta'?'99-suivre.png':pad(i)+'-'+slug(sp.v.name)+'.png';
     else name=slug(sp.v.name)+'-'+pad(i+1)+'-'+sp.type+'.png';
     out.push({name,canvas:copyCanvas(c),bg});
     if(msg)msg('Création des images… '+(i+1)+'/'+specs.length);
@@ -1849,7 +2017,7 @@ function wkBuildUi(){
   $('wkDebate').checked=wkDebateOn();$('wkDebate').addEventListener('change',()=>{try{localStorage.setItem('fp-wkdebate',$('wkDebate').checked?'1':'0')}catch(e){}});
   const ra=wkEl('button','','Mettre à jour tous les parfums du site (diapos incluses)');ra.type='button';ra.id='wkPubAll';mb.appendChild(ra);
   ra.addEventListener('click',async()=>{await flushSave();ra.disabled=true;try{await wkRepublishAll($('mkStatus'))}finally{ra.disabled=false}});
-  sb2.addEventListener('click',async()=>{await flushSave();const items=S.mode==='rank'?included():[lib.find(x=>x.id===S.packId)||ordered()[0]].filter(Boolean);if(!items.length){$('mkStatus').textContent='Aucun parfum à publier.';return}await wkPublishMany(items,$('mkStatus'))});
+  sb2.addEventListener('click',async()=>{await flushSave();const items=S.mode==='rank'?included():S.mode==='gout'?[...new Set(S.gouts.flatMap(g=>g.picks||[]))].map(id=>lib.find(x=>x.id===id)).filter(Boolean):[lib.find(x=>x.id===S.packId)||ordered()[0]].filter(Boolean);if(!items.length){$('mkStatus').textContent='Aucun parfum à publier.';return}await wkPublishMany(items,$('mkStatus'))});
 }
 function wkGate(msg){
   let g=$('wkGate');
