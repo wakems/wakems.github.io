@@ -620,6 +620,28 @@ async function enrichShopify(url,r){
   }
   return r;
 }
+/* base de parfums (Parfumo) : complète notes, parfumeur, année, accords, tenue et sillage */
+async function enrichDb(r){
+  const base=typeof window!=='undefined'&&window.WK_INFO_URL;if(!base||!r||!r.name)return r;
+  try{
+    const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),20000);
+    const res=await fetch(base+'&name='+encodeURIComponent(r.name)+'&brand='+encodeURIComponent(r.brand||''),{signal:ctl.signal});clearTimeout(tm);
+    if(!res.ok)return r;const d=await res.json();if(!d||!d.found)return r;
+    const cap=x=>x?x.charAt(0).toUpperCase()+x.slice(1):'';
+    if(!r.brand&&d.brand)r.brand=d.brand;
+    if(!(r.notesTop||r.notesHeart||r.notesBase)){
+      if(d.top||d.heart||d.base){r.notesTop=cap(d.top);r.notesHeart=cap(d.heart);r.notesBase=cap(d.base)}
+      else if(d.flat){r.notesHeart=cap(d.flat);r.notesFlat=true}
+    }
+    if(!r.perfumer&&d.perfumer)r.perfumer=d.perfumer;
+    if(!r.year&&d.year)r.year=d.year;
+    if(!r.tenue&&d.tenue)r.tenue=d.tenue;
+    if(!r.sillage&&d.sillage)r.sillage=d.sillage;
+    if(d.accords&&d.accords.length)r.accords=d.accords;
+    r.dbSource=d.source||'';
+  }catch(e){}
+  return r;
+}
 function parsePastedText(text){
   const body=String(text||'').replace(/\s+/g,' ').slice(0,6000);
   return Object.assign({name:'',brand:'',image:'',price:''},fromText('','',body));
@@ -654,5 +676,5 @@ function normalizeBlob(blob){
   });
 }
 
-return {parseHtml,enrichShopify,fetchHtml,fetchImageBlob,normalizeBlob,cutout,pickAccords,BG_BY_ACCORD,CATS};
+return {parseHtml,enrichShopify,enrichDb,fetchHtml,fetchImageBlob,normalizeBlob,cutout,pickAccords,BG_BY_ACCORD,CATS};
 })();

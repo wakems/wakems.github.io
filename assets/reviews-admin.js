@@ -130,10 +130,10 @@ async function fillFromLink(){
   if(!/^https?:\/\//i.test(url)){msg.textContent='Colle un lien complet qui commence par https://';return}
   if(!window.WKP){msg.textContent='Outil de lecture indisponible, recharge la page.';return}
   const c=client();const {data:{session}}=await c.auth.getSession();
-  if(session)window.WK_PAGE_PROXY='https://ntuwsxrrsyukacmodppu.supabase.co/functions/v1/fetch-page?t='+encodeURIComponent(session.access_token)+'&url=';
+  if(session){window.WK_PAGE_PROXY='https://ntuwsxrrsyukacmodppu.supabase.co/functions/v1/fetch-page?t='+encodeURIComponent(session.access_token)+'&url=';window.WK_INFO_URL='https://ntuwsxrrsyukacmodppu.supabase.co/functions/v1/perfume-info?t='+encodeURIComponent(session.access_token)}
   const btn=$('rFill');btn.disabled=true;msg.textContent='Lecture de la page…';
   try{
-    const html=await WKP.fetchHtml(url);const r=await WKP.enrichShopify(url,WKP.parseHtml(html,url));
+    const html=await WKP.fetchHtml(url);msg.textContent='Recherche des notes, de la tenue et du sillage…';const r=await WKP.enrichDb(await WKP.enrichShopify(url,WKP.parseHtml(html,url)));
     if(!r.name){msg.textContent='Je n’ai pas trouvé le parfum sur cette page. Essaie la page produit exacte.';return}
     editing=null;fill(null);
     const set=(id,v)=>{if(v&&$(id))$(id).value=v};

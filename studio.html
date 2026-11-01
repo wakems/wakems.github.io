@@ -962,6 +962,28 @@ async function enrichShopify(url,r){
   }
   return r;
 }
+/* base de parfums (Parfumo) : complète notes, parfumeur, année, accords, tenue et sillage */
+async function enrichDb(r){
+  const base=typeof window!=='undefined'&&window.WK_INFO_URL;if(!base||!r||!r.name)return r;
+  try{
+    const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),20000);
+    const res=await fetch(base+'&name='+encodeURIComponent(r.name)+'&brand='+encodeURIComponent(r.brand||''),{signal:ctl.signal});clearTimeout(tm);
+    if(!res.ok)return r;const d=await res.json();if(!d||!d.found)return r;
+    const cap=x=>x?x.charAt(0).toUpperCase()+x.slice(1):'';
+    if(!r.brand&&d.brand)r.brand=d.brand;
+    if(!(r.notesTop||r.notesHeart||r.notesBase)){
+      if(d.top||d.heart||d.base){r.notesTop=cap(d.top);r.notesHeart=cap(d.heart);r.notesBase=cap(d.base)}
+      else if(d.flat){r.notesHeart=cap(d.flat);r.notesFlat=true}
+    }
+    if(!r.perfumer&&d.perfumer)r.perfumer=d.perfumer;
+    if(!r.year&&d.year)r.year=d.year;
+    if(!r.tenue&&d.tenue)r.tenue=d.tenue;
+    if(!r.sillage&&d.sillage)r.sillage=d.sillage;
+    if(d.accords&&d.accords.length)r.accords=d.accords;
+    r.dbSource=d.source||'';
+  }catch(e){}
+  return r;
+}
 function parsePastedText(text){
   const body=String(text||'').replace(/\s+/g,' ').slice(0,6000);
   return Object.assign({name:'',brand:'',image:'',price:''},fromText('','',body));
@@ -1384,9 +1406,9 @@ async function importLinks(){
     if(lib.some(v=>v.src===url)){s.textContent='Déjà dans la liste';continue}
     s.textContent='Lecture de la page…';
     try{
-      const r=await enrichShopify(url,parseHtml(await fetchHtml(url),url));
+      const r=await enrichDb(await enrichShopify(url,parseHtml(await fetchHtml(url),url)));
       if(!r.name)throw new Error('empty');
-      const v=Object.assign(blankFiche(),{id:uid(),name:r.name,brand:r.brand,accords:[r.accords[0]||'',r.accords[1]||'',r.accords[2]||''],bg:bgFor(r.accords,DEFAULT_BG),
+      const v=Object.assign(blankFiche(),{id:uid(),notesText:r.notesFlat?'Notes : '+r.notesHeart:'',name:r.name,brand:r.brand,accords:[r.accords[0]||'',r.accords[1]||'',r.accords[2]||''],bg:bgFor(r.accords,DEFAULT_BG),
         year:r.year,conc:r.conc,notesTop:r.notesTop,notesHeart:r.notesHeart,notesBase:r.notesBase,perfumer:r.perfumer,price:r.price,tenue:r.tenue||'',sillage:r.sillage||'',src:url,createdAt:Date.now(),updatedAt:Date.now()});
       let photo=false;
       if(r.image){
@@ -1508,10 +1530,10 @@ async function packFromLink(){
     if(!old){$('links').value=url;await importLinks()}
     else{ /* déjà dans la liste : on relit la page et on complète ce qui manque */
       try{
-        const r=await enrichShopify(url,parseHtml(await fetchHtml(url),url));
+        const r=await enrichDb(await enrichShopify(url,parseHtml(await fetchHtml(url),url)));
         const put=(k,val)=>{if(val&&!old[k])old[k]=val};
         put('brand',r.brand);put('conc',r.conc);put('year',r.year);put('perfumer',r.perfumer);put('price',r.price);put('tenue',r.tenue);put('sillage',r.sillage);
-        if(!hasNotes(old)){old.notesTop=r.notesTop||'';old.notesHeart=r.notesHeart||'';old.notesBase=r.notesBase||'';if(r.accords&&r.accords.length&&hasNotes(old))old.accords=[r.accords[0]||'',r.accords[1]||'',r.accords[2]||'']}
+        if(!hasNotes(old)){old.notesTop=r.notesTop||'';old.notesHeart=r.notesHeart||'';old.notesBase=r.notesBase||'';if(r.notesFlat&&!old.notesText)old.notesText='Notes : '+r.notesHeart;if(r.accords&&r.accords.length&&hasNotes(old))old.accords=[r.accords[0]||'',r.accords[1]||'',r.accords[2]||'']}
         if(!old.photoId&&r.image){try{const b=await normalizeBlob(await fetchImageBlob(r.image)),pid='p'+uid();await dbPut('photos',{id:pid,blob:b});old.photoId=pid}catch(e){}}
         old.updatedAt=Date.now();await dbPut('fiches',old);renderLib();
       }catch(e){$('packMsg').textContent='Page illisible depuis le navigateur. Complète la fiche à la main.';return}
@@ -1849,7 +1871,7 @@ function wkGate(msg){
 async function wkCheck(){
   const {data:{session}}=await WK.sb.auth.getSession();WK.user=session&&session.user||null;WK.admin=false;
   if(WK.user){const {data,error}=await WK.sb.from('community_admins').select('user_id').eq('user_id',WK.user.id).maybeSingle();WK.admin=!error&&!!data}
-  if(WK.admin&&session){window.WK_PAGE_PROXY='https://ntuwsxrrsyukacmodppu.supabase.co/functions/v1/fetch-page?t='+encodeURIComponent(session.access_token)+'&url='}
+  if(WK.admin&&session){window.WK_PAGE_PROXY='https://ntuwsxrrsyukacmodppu.supabase.co/functions/v1/fetch-page?t='+encodeURIComponent(session.access_token)+'&url=';window.WK_INFO_URL='https://ntuwsxrrsyukacmodppu.supabase.co/functions/v1/perfume-info?t='+encodeURIComponent(session.access_token)}
   if(WK.admin){const g=$('wkGate');if(g)g.hidden=true;$('wkOut').hidden=false;wkStatus('Connecté · '+(WK.user.email||'créateur'));refreshWkTags();wkSyncStart();return true}
   wkGate(WK.user?'Ce compte n’a pas le rôle créateur.':'');return false;
 }
