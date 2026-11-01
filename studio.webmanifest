@@ -1,0 +1,29 @@
+{
+ "name": "Studio Wakems",
+ "short_name": "Studio",
+ "start_url": "/studio.html",
+ "scope": "/studio.html",
+ "display": "standalone",
+ "background_color": "#F1EEE9",
+ "theme_color": "#F1EEE9",
+ "description": "Créer les fiches parfum et les publier sur Wakems.",
+ "icons": [
+  {
+   "src": "/assets/studio-icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/assets/studio-icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "/assets/studio-apple-touch-icon.png",
+   "sizes": "180x180",
+   "type": "image/png"
+  }
+ ]
+}

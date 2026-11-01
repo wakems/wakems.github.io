@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=73fe335d-194d-465f-84d2-6023ef932e83
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F3EEE7">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Wakems">
+
+<meta name="description" content="Wakems, la communauté des passionnés de parfums : découvre, évalue et partage.">
+<meta property="og:title" content="Wakems · La communauté des passionnés de parfums">
+<meta property="og:description" content="Découvre, évalue et partage tes parfums avec une communauté passionnée.">
+<meta property="og:image" content="https://wakems.github.io/assets/og.png">
+<meta property="og:type" content="website">
+<title>Wakems — Espace créateur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#30251f;--paper:#eee5d9;--paper2:#e3d5c5;--cream:#fffaf2;--muted:#7c6b5e;--line:#cdbba9;--accent:#8a5b43;--dark:#30251f;--gold:#c29a62;--good:#466b54;--bad:#9b493d;--shadow:0 18px 50px #39291d20}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.5}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inherit}.shell{max-width:1240px;margin:0 auto;padding:24px clamp(16px,4vw,52px) 70px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line);padding:2px 0 18px}.brand{font:700 18px 'Oswald',sans-serif;letter-spacing:.11em;text-transform:uppercase}.brand small{display:block;font:700 10px 'DM Sans';letter-spacing:.2em;color:var(--muted);margin-top:2px}.toplinks{display:flex;gap:10px;flex-wrap:wrap}.toplinks a,.toplinks button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:9px 15px;text-decoration:none;font-size:13px;font-weight:700}.toplinks .creator{background:var(--dark);color:var(--cream);border-color:var(--dark)}
+.hero{padding:50px 0 38px;display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:end}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}h1{font:800 clamp(48px,7vw,88px)/.94 'Oswald',sans-serif;letter-spacing:-.035em;text-transform:uppercase;margin:12px 0 18px;max-width:760px}h1 em{font:700 .78em 'Playfair Display',serif;text-transform:none;letter-spacing:-.04em}.hero p{max-width:650px;color:#66564b;font-size:17px;margin:0}.heroNote{background:var(--dark);color:var(--cream);padding:24px 25px 26px;box-shadow:var(--shadow);position:relative;overflow:hidden}.heroNote:after{content:'✳';position:absolute;right:12px;top:-30px;font:150px 'Playfair Display';color:#ffffff12}.heroNote strong{display:block;font:700 26px 'Playfair Display';position:relative;z-index:1}.heroNote span{display:block;color:#d1c2b2;font-size:13px;margin-top:7px;max-width:280px;position:relative;z-index:1}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:5px 0 20px;flex-wrap:wrap}.sectionTitle{font:700 35px 'Playfair Display';margin:0}.sectionSub{font-size:13px;color:var(--muted);margin:2px 0 0}.search{display:flex;gap:8px;align-items:center;background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:4px 7px 4px 16px;min-width:min(100%,310px)}.search input{border:0;background:transparent;outline:0;min-width:0;width:100%;padding:8px 0}.search button{border:0;border-radius:50%;height:34px;width:34px;background:var(--dark);color:white;font-weight:800}
+.status{padding:12px 16px;background:#f6eee4;border:1px solid var(--line);color:#6a594b;font-size:13px;margin-bottom:18px}.status.connected{border-color:#8daa91;background:#edf3eb;color:#355941}.status.error{border-color:#d69b91;background:#fbefed;color:#7a3329}
+.feed{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}.post{background:var(--cream);border:1px solid var(--line);box-shadow:0 9px 24px #38281b12;overflow:hidden;display:flex;flex-direction:column;min-width:0;transition:transform .2s,box-shadow .2s}.post:hover{transform:translateY(-3px);box-shadow:var(--shadow)}.postImage{aspect-ratio:4/4.3;background:#d6c5b3;position:relative;overflow:hidden}.postImage img{height:100%;width:100%;object-fit:cover;display:block}.postImage .number{position:absolute;left:13px;top:13px;background:var(--cream);padding:6px 10px;font:600 12px 'Oswald';letter-spacing:.1em}.postBody{padding:17px 18px 19px;display:flex;flex-direction:column;gap:9px;flex:1}.pill{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}.post h3{font:700 25px/1.12 'Playfair Display';margin:0;overflow-wrap:anywhere}.post .perfume{font-size:13px;color:var(--muted)}.post .caption{font-size:14px;margin:0;color:#594b42;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.postFoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:9px}.commentCount{font-size:12px;color:var(--muted)}.openTalk{border:0;background:var(--dark);color:var(--cream);font-size:12px;font-weight:800;padding:11px 15px;border-radius:2px}.empty{grid-column:1/-1;background:#e6d8c9;border:1px dashed #bca994;text-align:center;padding:45px 22px}.empty strong{display:block;font:700 28px 'Playfair Display';margin-bottom:5px}.empty p{font-size:14px;color:var(--muted);margin:0}
+.footer{margin-top:42px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.modal{position:fixed;inset:0;background:#1f1712b8;z-index:20;display:none;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.dialog{background:var(--paper);width:min(980px,100%);max-height:92vh;overflow:auto;box-shadow:0 25px 90px #0006;position:relative}.dialogTop{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--paper);z-index:3}.dialogTop strong{font:700 17px 'Playfair Display'}.close{border:1px solid var(--line);background:transparent;border-radius:50%;width:36px;height:36px;font-size:20px}.detailGrid{display:grid;grid-template-columns:.85fr 1.15fr;min-height:530px}.detailVisual{background:#d7c4b1;min-height:380px}.detailVisual img{width:100%;height:100%;object-fit:cover;display:block}.discussion{padding:22px;min-width:0}.detailEyebrow{font-size:10px;letter-spacing:.18em;font-weight:800;color:var(--accent);text-transform:uppercase}.discussion h2{font:700 clamp(29px,4vw,42px)/1.05 'Playfair Display';margin:6px 0}.detailCaption{font-size:14px;color:var(--muted);margin:8px 0 20px}.threadTitle{font:700 20px 'Playfair Display';margin:0 0 12px}.comments{display:flex;flex-direction:column;gap:10px;max-height:285px;overflow:auto;padding-right:4px}.comment{background:var(--cream);border:1px solid #dfd2c4;padding:11px 12px}.comment.reply{margin-left:22px;border-left:3px solid var(--gold)}.commentHead{display:flex;align-items:center;justify-content:space-between;gap:8px}.commentHead b{font-size:12px}.commentHead time{font-size:10px;color:var(--muted)}.comment p{font-size:14px;margin:5px 0 7px;white-space:pre-wrap;overflow-wrap:anywhere}.commentActions{display:flex;gap:13px}.textAction{border:0;background:transparent;padding:0;color:var(--accent);font-size:11px;font-weight:800}.commentForm{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}.formRow{display:grid;grid-template-columns:160px 1fr;gap:8px}.field{width:100%;background:var(--cream);border:1px solid var(--line);padding:10px 12px;color:var(--ink);min-width:0}.field:focus{outline:2px solid var(--gold);outline-offset:1px}textarea.field{resize:vertical;min-height:76px}.formActions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}.micro{font-size:11px;color:var(--muted);max-width:440px}.primary{border:0;background:var(--dark);color:var(--cream);font-weight:800;padding:11px 18px}.replying{display:none;font-size:12px;color:var(--accent);margin:0 0 7px}.replying.show{display:block}
+.panel{display:none;margin:25px 0;padding:22px;background:#e1d2c2;border:1px solid var(--line)}.panel.open{display:block}.panel h2{font:700 29px 'Playfair Display';margin:0 0 12px}.panelGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panelBox{background:var(--cream);padding:17px;border:1px solid var(--line);min-width:0}.panelBox h3{font:700 19px 'Playfair Display';margin:0 0 12px}.stack{display:flex;flex-direction:column;gap:9px}.stack label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--muted)}.stack input,.stack textarea,.stack select{width:100%;background:#f3ece2;border:1px solid var(--line);padding:10px;color:var(--ink)}.stack input[type=file]{padding:8px}.stack textarea{min-height:75px;resize:vertical}.adminTools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.adminTools button,.subtleBtn{border:1px solid var(--line);background:transparent;padding:8px 12px;font-size:12px;font-weight:800}.reports{display:flex;flex-direction:column;gap:8px}.report{padding:10px;background:#f3ece2;border:1px solid var(--line);font-size:13px}.report p{margin:5px 0}.noteWarn{font-size:11px;color:#796759;line-height:1.45}#inviteBox{background:#f3ece2;border:1px solid var(--line);padding:14px;margin-bottom:14px}.hidden{display:none!important}
+@media(max-width:900px){.feed{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr .7fr}.detailGrid{grid-template-columns:.8fr 1.2fr}}
+@media(max-width:620px){.shell{padding-top:15px}.topbar{align-items:flex-start}.toplinks a,.toplinks button{font-size:11px;padding:8px 10px}.hero{grid-template-columns:1fr;padding:32px 0 27px}.heroNote{padding:17px}.feed{grid-template-columns:1fr 1fr;gap:10px}.postBody{padding:12px}.post h3{font-size:19px}.post .caption{font-size:12px}.openTalk{padding:9px 10px}.sectionTitle{font-size:29px}.detailGrid{grid-template-columns:1fr}.detailVisual{height:270px;min-height:0}.discussion{padding:16px}.formRow{grid-template-columns:1fr}.panelGrid{grid-template-columns:1fr}.dialog{max-height:95vh}.comments{max-height:240px}}
+@media(max-width:390px){.feed{grid-template-columns:1fr}.postImage{aspect-ratio:4/3}.topbar{flex-direction:column}.toplinks{width:100%}}
+
+/* Public/creator route separation: visitors only see the public discussion gallery. */
+body.public-mode .toplinks,
+body.public-mode #creatorToggle,
+body.public-mode #creatorPanel { display:none !important; }
+body.creator-mode .hero,
+body.creator-mode .toolbar,
+body.creator-mode #connectionStatus,
+body.creator-mode #feed { display:none !important; }
+body.creator-mode #creatorToggle { display:none !important; }
+body.creator-mode .toplinks { display:flex !important; }
+body.creator-mode #creatorPanel { display:block !important; margin-top:24px; }
+body.creator-mode .creatorHomeLink { display:inline-flex; }
+
+</style>
+<script>
+// Supabase invite links may return to the configured Site URL (the public homepage).
+// Route invite callbacks to the separate creator portal while keeping the auth fragment intact.
+(function(){
+  const hash = window.location.hash || '';
+  const params = new URLSearchParams(hash.replace(/^#/, ''));
+  if (params.get('type') === 'invite' && !/\/createur\.html$/.test(window.location.pathname)) {
+    window.location.replace('/createur.html' + hash);
+  }
+})();
+</script>
+<link rel="preload" href="/assets/fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/wakems-theme.css">
+</head>
+<body class="creator-mode">
+<div class="shell">
+  <nav class="topbar">
+    <a class="brand" href="/" aria-label="Wakems, accueil"><img class="brandMark" src="/assets/logo-mark.png" alt="" width="52" height="38"><span class="brandWord">Wakems<small>Portail créateur · accès réservé</small></span></a>
+    <div class="toplinks"><a class='creatorHomeLink' href='/'>← Retour à la communauté</a><a class='creatorHomeLink' href='/profil'>Espace membres</a></div>
+  </nav>
+  <section class="hero">
+    <div><div class="eyebrow">Notes, matières & impressions</div><h1>Le parfum<br><em>se partage.</em></h1><p>Une note, une image, des avis différents. Découvre les visuels publiés ici et échange avec les autres passionnés : ce que tu reconnais, ce que tu imagines, ce que tu aimes ou pas.</p></div>
+    <aside class="heroNote"><strong>À chacun son nez.</strong><span>Pas de bonne ou de mauvaise impression : argumente, compare et reste respectueux.</span></aside>
+  </section>
+  <div class="toolbar"><div><h2 class="sectionTitle">Les notes à débattre</h2><p class="sectionSub">Les publications ajoutées par le créateur apparaîtront ici.</p></div><label class="search"><input id="search" type="search" placeholder="Rechercher une note…" aria-label="Rechercher"><button id="clearSearch" type="button" aria-label="Effacer">×</button></label></div>
+  <div class="status" id="connectionStatus">Espace prêt à être relié à la base de données.</div>
+  <section class="feed" id="feed" aria-live="polite"><div class="empty"><strong>Les discussions arrivent ici.</strong><p>Les visuels de notes seront visibles après la première publication du créateur.</p></div></section>
+  <section class="panel" id="creatorPanel">
+    <h2>Espace créateur</h2>
+    <div id="loginBox" class="panelBox" style="max-width:520px">
+      <h3>Accès créateur</h3>
+      <div id="inviteBox" class="hidden">
+        <h3>Finaliser ton invitation</h3>
+        <p id="inviteMessage" class="noteWarn">Ton adresse vient d’être confirmée. Choisis maintenant un mot de passe pour ton compte créateur.</p>
+        <form id="inviteForm" class="stack">
+          <label for="newAdminPassword">Nouveau mot de passe (8 caractères minimum)</label><input id="newAdminPassword" type="password" minlength="8" autocomplete="new-password" required>
+          <label for="confirmAdminPassword">Confirmer le mot de passe</label><input id="confirmAdminPassword" type="password" minlength="8" autocomplete="new-password" required>
+          <button class="primary" type="submit">Enregistrer mon mot de passe</button>
+          <p id="inviteStatus" class="noteWarn" aria-live="polite"></p>
+        </form>
+      </div>
+      <form id="loginForm" class="stack"><label for="adminEmail">Adresse e-mail du compte créateur</label><input id="adminEmail" type="email" autocomplete="username" required><label for="adminPassword">Mot de passe</label><input id="adminPassword" type="password" autocomplete="current-password" required><button class="primary" type="submit">Se connecter</button><p class="noteWarn">Les visiteurs n'ont pas besoin de compte ni d'adresse e-mail pour participer. Ce compte sert uniquement à publier et modérer.</p></form>
+    </div>
+    <div id="adminBox" class="hidden">
+      <div class="adminTools"><strong id="adminWelcome">Connecté</strong><button id="logoutBtn" type="button">Se déconnecter</button><button id="refreshBtn" type="button">Actualiser</button></div>
+      <section id="reviewsAdmin" class="panelBox reviewsAdmin hidden">
+        <div class="raHead"><div><span class="eyebrow">Réservé à ton compte créateur</span><h3>Mes avis parfum</h3><p class="noteWarn">Ce que tu publies ici apparaît dans « Les avis Wakems » sur la page d'accueil. Toi seul peux ajouter, modifier ou supprimer.</p></div>
+          <div class="raBtns"><a class="primary" href="/studio.html">Ouvrir mon studio de fiches</a><label class="subtleBtn importBtn">Importer ma sauvegarde de fiches<input id="rImport" type="file" accept="application/json,.json" hidden></label></div></div>
+        <p id="rImportMsg" class="noteWarn" aria-live="polite">Le plus simple : crée tes fiches dans ton studio, puis touche « Publier sur Wakems ». Pour tes anciennes fiches : « Sauvegarder » dans l’ancien outil, puis « Restaurer » dans le studio (ou importe le fichier ici).</p>
+        <div class="raGrid">
+          <form id="rForm" class="stack">
+            <h4 id="rFormTitle">Nouvel avis parfum</h4>
+            <div class="linkFill">
+              <label for="rLink">Remplir avec un lien</label>
+              <div class="linkRow"><input id="rLink" type="url" inputmode="url" placeholder="Colle le lien de la page du parfum (boutique, marque…)"><button id="rFill" type="button" class="primary">Remplir</button></div>
+              <p class="noteWarn" id="rFillMsg" aria-live="polite">Nom, marque, notes, accords, concentration, prix, photo et description sont remplis automatiquement. Tu n'as plus qu'à mettre ta note.</p>
+            </div>
+            <div class="two"><div class="stack"><label for="rName">Parfum</label><input id="rName" maxlength="90" required placeholder="Ex. Libre"></div><div class="stack"><label for="rBrand">Maison</label><input id="rBrand" maxlength="70" placeholder="Ex. YSL"></div></div>
+            <div class="two"><div class="stack"><label for="rScore">Ma note /10</label><input id="rScore" inputmode="decimal" placeholder="Ex. 8,5"></div><div class="stack"><label for="rVerdict">Verdict</label><select id="rVerdict"><option value="">Automatique</option><option value="skip">Skip</option><option value="maybe">Maybe</option><option value="must">Must try</option></select></div></div>
+            <label>Accords (3 maximum)</label><div class="three"><input id="rA1" aria-label="Accord 1" placeholder="Vanillé"><input id="rA2" aria-label="Accord 2" placeholder="Ambré"><input id="rA3" aria-label="Accord 3" placeholder="Boisé"></div>
+            <label for="rDesc">Description du parfum (présentation, notes)</label><textarea id="rDesc" maxlength="1200" placeholder="Laisse vide pour une description automatique d’après les accords et les notes"></textarea>
+            <label for="rReview">Mon avis</label><textarea id="rReview" maxlength="2000" placeholder="Ton ressenti, en quelques phrases"></textarea>
+            <div class="two"><div class="stack"><label for="rTenue">Tenue</label><input id="rTenue" list="rTenueL" placeholder="Ex. 6 à 8 h"></div><div class="stack"><label for="rSillage">Sillage</label><input id="rSillage" list="rSillageL" placeholder="Ex. Puissant"></div></div>
+            <datalist id="rTenueL"><option value="2 à 4 h"><option value="4 à 6 h"><option value="6 à 8 h"><option value="8 à 10 h"><option value="10 h et plus"></datalist>
+            <datalist id="rSillageL"><option value="Discret"><option value="Modéré"><option value="Puissant"><option value="Énorme"></datalist>
+            <details class="raMore"><summary>Notes olfactives et détails</summary>
+              <label for="rTop">Notes de tête</label><input id="rTop"><label for="rHeart">Notes de cœur</label><input id="rHeart"><label for="rBase">Notes de fond</label><input id="rBase">
+              <div class="two"><div class="stack"><label for="rConc">Concentration</label><input id="rConc" placeholder="Eau de Parfum"></div><div class="stack"><label for="rYear">Sortie</label><input id="rYear" placeholder="2024"></div></div>
+              <div class="two"><div class="stack"><label for="rPerfumer">Parfumeur</label><input id="rPerfumer"></div><div class="stack"><label for="rPrice">Prix</label><input id="rPrice" placeholder="95 €"></div></div>
+            </details>
+            <div class="two"><div class="stack"><label for="rImage">Photo du flacon</label><input id="rImage" type="file" accept="image/jpeg,image/png,image/webp"><div id="rImgNow" class="rImgNow"></div></div><div class="stack"><label for="rColor">Couleur de fond</label><input id="rColor" type="color" value="#D4872A"></div></div>
+            <label class="chkLine"><input id="rPub" type="checkbox" checked> Visible sur le site</label>
+            <label class="chkLine"><input id="rDebate" type="checkbox" checked> Ouvrir aux avis de la communauté (débat)</label>
+            <div class="raBtns"><button id="rSave" class="primary" type="submit">Publier l'avis</button><button id="rCancel" class="subtleBtn hidden" type="button">Annuler la modification</button></div>
+            <p id="rStatus" class="noteWarn" aria-live="polite"></p>
+          </form>
+          <div><h4>Publiés</h4><div id="rList" class="rList"><p class="noteWarn">Chargement…</p></div></div>
+        </div>
+      </section>
+      <section class="panelBox reviewsAdmin" id="postsAdmin">
+        <span class="eyebrow">Les notes à débattre</span><h3>Mes publications</h3>
+        <p class="noteWarn">Toutes tes publications visibles dans « Les notes à débattre ». Touche Supprimer deux fois pour confirmer : la publication disparaît du site avec ses commentaires.</p>
+        <p class="noteWarn" id="pMsg" aria-live="polite"></p>
+        <div id="pList" class="rList"><p class="noteWarn">Chargement…</p></div>
+      </section>
+      <div class="panelGrid">
+        <div class="panelBox"><h3>Publier une image de note</h3><form id="publishForm" class="stack"><label for="postTitle">Nom de la note / de l'accord</label><input id="postTitle" maxlength="70" required placeholder="Ex. Bergamote"><label for="postPerfume">Parfum associé (facultatif)</label><input id="postPerfume" maxlength="90" placeholder="Ex. Nom du parfum"><label for="postBrand">Maison (facultatif)</label><input id="postBrand" maxlength="70" placeholder="Ex. Maison de parfum"><label for="postCategory">Famille de note</label><select id="postCategory"><option>Note de tête</option><option>Note de cœur</option><option>Note de fond</option><option>Accord olfactif</option><option>Ingrédient</option></select><label for="postCaption">Question ou contexte pour lancer le débat</label><textarea id="postCaption" maxlength="300" placeholder="Pour toi, cette note est plutôt fraîche, verte ou zestée ?"></textarea><label for="postImage">Image (JPG, PNG ou WebP · 8 Mo maximum)</label><input id="postImage" type="file" accept="image/jpeg,image/png,image/webp" required><button class="primary" type="submit">Publier dans la communauté</button><p id="publishStatus" class="noteWarn" aria-live="polite">Publie uniquement les visuels que tu souhaites rendre publics.</p></form></div>
+        <div class="panelBox"><h3>Signalements à vérifier</h3><p class="noteWarn">Les commentaires signalés apparaissent ici. Tu peux masquer un commentaire depuis cette liste.</p><div class="reports" id="reports"><p class="noteWarn">Aucun signalement chargé.</p></div></div>
+      </div>
+    </div>
+  </section>
+  <footer class="footer"><span class="footBrand"><img class="footLogo" src="/assets/logo.png" alt="Wakems" width="146" height="58"><span class="footTag">Découvre · Évalue · Partage</span></span><span class="footLinks"><a href="mailto:mathwakems@gmail.com">mathwakems@gmail.com</a><a class="tiktokHref" href="https://www.tiktok.com/@mathwake" target="_blank" rel="noopener">TikTok</a><a href="/">Accueil</a><span>© Wakems</span></span></footer>
+</div>
+
+<div class="modal" id="discussionModal" role="dialog" aria-modal="true" aria-labelledby="discussionTitle">
+  <div class="dialog"><div class="dialogTop"><strong>Le débat autour de cette note</strong><button class="close" id="closeDiscussion" type="button" aria-label="Fermer">×</button></div><div class="detailGrid"><div class="detailVisual"><img id="detailImage" alt="Visuel de la note"></div><div class="discussion"><div class="detailEyebrow" id="detailCategory"></div><h2 id="discussionTitle"></h2><div class="detailCaption" id="detailCaption"></div><h3 class="threadTitle">Les avis <span id="commentCount"></span></h3><div class="comments" id="comments"><p class="noteWarn">Chargement des avis…</p></div><form class="commentForm" id="commentForm"><p id="replying" class="replying"></p><div class="formRow"><input class="field" id="nickname" maxlength="24" placeholder="Ton pseudo" required><textarea class="field" id="commentBody" maxlength="500" placeholder="Tu ressens quoi en voyant cette note ?" required></textarea></div><div class="formActions"><span class="micro">Pseudo uniquement. N'écris pas ton nom complet, ton numéro, ton adresse ou tes réseaux. 500 caractères maximum.</span><button class="primary" type="submit">Publier mon avis</button></div><p id="commentStatus" class="noteWarn" aria-live="polite"></p></form></div></div></div>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* CONFIGURATION : remplace ces deux valeurs par l'URL du projet Supabase et sa clé publishable/anon. Ne colle JAMAIS une clé service_role ici. */
+const SUPABASE_URL = window.WAKEMS_SUPABASE_URL || '';
+const SUPABASE_ANON_KEY = window.WAKEMS_SUPABASE_KEY || '';
+const $ = id => document.getElementById(id);
+const configured = /^https:\/\/.+/.test(SUPABASE_URL) && !SUPABASE_URL.includes('COLLER_') && SUPABASE_ANON_KEY.length>20 && !SUPABASE_ANON_KEY.includes('COLLER_');
+let sb=null, posts=[], currentPost=null, replyParent=null, currentUser=null, liveChannel=null, commentCache=[], inviteFlow=false;
+const escapeHtml = value => String(value??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtDate = value => {try{return new Intl.DateTimeFormat('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(value))}catch(e){return ''}};
+const validText = t => !/(https?:\/\/|www\.|\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b)/i.test(t) && !/(\+?\d[\d .()\-]{7,}\d)/.test(t);
+function setStatus(msg,type=''){const el=$('connectionStatus');el.textContent=msg;el.className='status'+(type?' '+type:'')}
+function initials(n){return (n||'').trim().slice(0,1).toUpperCase()||'P'}
+function renderFeed(){
+  const term=$('search').value.trim().toLocaleLowerCase('fr');
+  const filtered=posts.filter(p=>[p.title,p.perfume_name,p.brand,p.note_category,p.caption].join(' ').toLocaleLowerCase('fr').includes(term));
+  if(!configured){$('feed').innerHTML='<div class="empty"><strong>Connexion à configurer.</strong><p>Le site est prêt, mais il faut connecter la base Supabase indiquée dans le fichier guide avant que les publications et les avis soient partagés entre visiteurs.</p></div>';return}
+  if(!filtered.length){$('feed').innerHTML='<div class="empty"><strong>'+ (posts.length?'Aucun résultat.':'Les discussions arrivent ici.') +'</strong><p>'+(posts.length?'Essaie un autre mot-clé.':'Publie ton premier visuel depuis l’accès créateur. Les visiteurs pourront ensuite débattre sous chaque image.')+'</p></div>';return}
+  $('feed').innerHTML=filtered.map((p,i)=>`<article class="post"><div class="postImage"><img src="${escapeHtml(p.image_url)}" alt="Visuel : ${escapeHtml(p.title)}" loading="lazy"><span class="number">N° ${String(filtered.length-i).padStart(2,'0')}</span></div><div class="postBody"><span class="pill">${escapeHtml(p.note_category||'Note olfactive')}</span><h3>${escapeHtml(p.title)}</h3><div class="perfume">${escapeHtml([p.perfume_name,p.brand].filter(Boolean).join(' · ')||'Note à découvrir')}</div><p class="caption">${escapeHtml(p.caption||'Quelle est ton impression ?')}</p><div class="postFoot"><span class="commentCount">${Number(p.comment_count||0)} avis</span><button class="openTalk" data-open="${escapeHtml(p.id)}" type="button">Ouvrir le débat ↗</button></div></div></article>`).join('');
+  $('feed').querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openDiscussion(b.dataset.open)));
+}
+async function loadPosts(){if(!sb)return;const {data,error}=await sb.from('community_posts').select('*').order('created_at',{ascending:false}).limit(100);if(error){setStatus('Connexion à Supabase établie, mais lecture impossible : vérifie le script SQL et les politiques d’accès.','error');console.error(error);return}posts=data||[];if(posts.length){const {data:counts}=await sb.from('community_comments').select('post_id').eq('is_hidden',false).limit(10000);const tally={};(counts||[]).forEach(c=>tally[c.post_id]=(tally[c.post_id]||0)+1);posts=posts.map(p=>({...p,comment_count:tally[p.id]||0}));}renderFeed();}
+function openDiscussion(id){currentPost=posts.find(p=>p.id===id);if(!currentPost)return;replyParent=null;$('replying').classList.remove('show');$('detailImage').src=currentPost.image_url;$('detailImage').alt='Visuel de '+currentPost.title;$('detailCategory').textContent=currentPost.note_category||'Note olfactive';$('discussionTitle').textContent=currentPost.title;$('detailCaption').textContent=[currentPost.perfume_name,currentPost.brand].filter(Boolean).join(' · ')+(currentPost.caption?' — '+currentPost.caption:'');$('discussionModal').classList.add('open');document.body.style.overflow='hidden';$('commentStatus').textContent='';loadComments();}
+function closeDiscussion(){$('discussionModal').classList.remove('open');document.body.style.overflow='';currentPost=null;replyParent=null}
+async function loadComments(){if(!sb||!currentPost)return;const id=currentPost.id;const {data,error}=await sb.from('community_comments').select('id,post_id,nickname,body,parent_id,created_at').eq('post_id',id).eq('is_hidden',false).order('created_at',{ascending:true}).limit(300);if(error){$('comments').innerHTML='<p class="noteWarn">Impossible de charger les avis pour le moment.</p>';console.error(error);return}if(!currentPost||currentPost.id!==id)return;commentCache=data||[];renderComments();}
+function renderComments(){const rows=commentCache;const top=rows.filter(c=>!c.parent_id);const replies=rows.filter(c=>c.parent_id);$('commentCount').textContent='('+rows.length+')';if(!rows.length){$('comments').innerHTML='<p class="noteWarn">Pas encore d’avis. Lance la discussion !</p>';return}$('comments').innerHTML=top.map(c=>commentHtml(c,false)+replies.filter(r=>r.parent_id===c.id).map(r=>commentHtml(r,true)).join('')).join('')+replies.filter(r=>!top.some(t=>t.id===r.parent_id)).map(r=>commentHtml(r,true)).join('');$('comments').querySelectorAll('[data-reply]').forEach(b=>b.addEventListener('click',()=>{replyParent=b.dataset.reply;$('replying').textContent='Réponse à '+(commentCache.find(c=>c.id===replyParent)?.nickname||'un membre')+' · Annuler';$('replying').classList.add('show');$('commentBody').focus()}));$('comments').querySelectorAll('[data-report]').forEach(b=>b.addEventListener('click',()=>reportComment(b.dataset.report)))}
+function commentHtml(c,isReply){return `<article class="comment${isReply?' reply':''}"><div class="commentHead"><b>${escapeHtml(c.nickname)}</b><time>${fmtDate(c.created_at)}</time></div><p>${escapeHtml(c.body)}</p><div class="commentActions"><button class="textAction" type="button" data-reply="${escapeHtml(c.id)}">Répondre</button><button class="textAction" type="button" data-report="${escapeHtml(c.id)}">Signaler</button></div></article>`}
+async function submitComment(e){e.preventDefault();if(!sb||!currentPost)return;const nickname=$('nickname').value.trim(),body=$('commentBody').value.trim();if(nickname.length<2||nickname.length>24){$('commentStatus').textContent='Choisis un pseudo de 2 à 24 caractères.';return}if(body.length<2||body.length>500){$('commentStatus').textContent='Ton avis doit contenir entre 2 et 500 caractères.';return}if(!validText(nickname+' '+body)){$('commentStatus').textContent='Évite les liens, coordonnées ou adresses e-mail dans les commentaires.';return}const now=Date.now(),last=Number(localStorage.getItem('mp-last-comment')||0);if(now-last<12000){$('commentStatus').textContent='Attends quelques secondes avant de publier un nouvel avis.';return}const btn=$('commentForm').querySelector('button[type=submit]');btn.disabled=true;$('commentStatus').textContent='Publication…';const payload={post_id:currentPost.id,nickname,body,parent_id:replyParent||null};const {error}=await sb.from('community_comments').insert(payload);btn.disabled=false;if(error){$('commentStatus').textContent='Publication impossible. Réessaie dans un instant.';console.error(error);return}localStorage.setItem('mp-last-comment',String(now));localStorage.setItem('mp-nickname',nickname);$('commentBody').value='';$('replying').classList.remove('show');replyParent=null;$('commentStatus').textContent='Ton avis est publié.';await loadComments();}
+async function reportComment(id){if(!sb)return;const reason='Commentaire à vérifier par le créateur';const {error}=await sb.from('community_reports').insert({comment_id:id,reason});if(error){alert('Le signalement n’a pas pu être envoyé.');console.error(error)}else{alert('Merci, le signalement a été transmis au créateur.')}}
+function toggleCreator(){const panel=$('creatorPanel');panel.classList.toggle('open');if(panel.classList.contains('open'))panel.scrollIntoView({behavior:'smooth',block:'start'})}
+function showInviteForm(){
+  $('loginBox').classList.remove('hidden');
+  $('adminBox').classList.add('hidden');
+  $('inviteBox').classList.remove('hidden');
+  $('loginForm').classList.add('hidden');
+}
+async function saveInvitePassword(e){
+  e.preventDefault();
+  if(!sb)return;
+  const password=$('newAdminPassword').value;
+  const confirmation=$('confirmAdminPassword').value;
+  if(password.length<8){$('inviteStatus').textContent='Choisis au moins 8 caractères.';return;}
+  if(password!==confirmation){$('inviteStatus').textContent='Les deux mots de passe ne correspondent pas.';return;}
+  const button=$('inviteForm').querySelector('button[type=submit]');
+  button.disabled=true;$('inviteStatus').textContent='Enregistrement…';
+  const {error}=await sb.auth.updateUser({password});
+  button.disabled=false;
+  if(error){$('inviteStatus').textContent='Impossible d’enregistrer le mot de passe : '+error.message;return;}
+  inviteFlow=false;
+  history.replaceState({},document.title,window.location.pathname+window.location.search);
+  $('inviteBox').classList.add('hidden');
+  $('loginForm').classList.remove('hidden');
+  $('inviteStatus').textContent='Mot de passe enregistré.';
+  await checkAdmin();
+  if(currentUser && $('adminBox').classList.contains('hidden')){
+    $('publishStatus').textContent='Le compte est confirmé, mais son rôle créateur manque. Ajoute son User UID dans community_admins.';
+  }
+}
+async function checkAdmin(){if(!sb)return;const {data:{session}}=await sb.auth.getSession();currentUser=session?.user||null;if(inviteFlow){if(currentUser){showInviteForm();}else{showInviteForm();$('inviteMessage').textContent='Ce lien d’invitation est invalide ou a expiré. Demande un nouvel envoi de l’invitation après avoir réglé l’adresse de retour du site.';$('inviteForm').classList.add('hidden');}return;}if(!currentUser){$('loginBox').classList.remove('hidden');$('adminBox').classList.add('hidden');$('inviteBox').classList.add('hidden');$('loginForm').classList.remove('hidden');return}const {data,error}=await sb.from('community_admins').select('user_id').eq('user_id',currentUser.id).maybeSingle();if(error||!data){await sb.auth.signOut();currentUser=null;$('loginBox').classList.remove('hidden');$('adminBox').classList.add('hidden');$('publishStatus').textContent='Ce compte ne possède pas le rôle créateur. Vérifie son identifiant dans community_admins.';return}$('loginBox').classList.add('hidden');$('adminBox').classList.remove('hidden');$('adminWelcome').textContent='Connecté : '+(currentUser.email||'créateur');loadReports();}
+async function login(e){e.preventDefault();if(!sb)return;const {error}=await sb.auth.signInWithPassword({email:$('adminEmail').value.trim(),password:$('adminPassword').value});if(error){$('publishStatus').textContent='Connexion impossible : '+error.message;return}await checkAdmin();}
+async function logout(){if(sb)await sb.auth.signOut();currentUser=null;await checkAdmin()}
+function safeFileName(s){return String(s||'image').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9._-]+/g,'-').slice(-70)}
+async function publish(e){e.preventDefault();if(!sb||!currentUser)return;const file=$('postImage').files[0],title=$('postTitle').value.trim();if(!file||!title)return;if(file.size>8*1024*1024){$('publishStatus').textContent='Image trop lourde : 8 Mo maximum.';return}if(!['image/jpeg','image/png','image/webp'].includes(file.type)){$('publishStatus').textContent='Format non accepté. Utilise JPG, PNG ou WebP.';return}const btn=$('publishForm').querySelector('button');btn.disabled=true;$('publishStatus').textContent='Envoi de l’image…';const path=crypto.randomUUID()+'-'+safeFileName(file.name);const up=await sb.storage.from('notes-images').upload(path,file,{cacheControl:'3600',upsert:false});if(up.error){btn.disabled=false;$('publishStatus').textContent='Envoi impossible : vérifie le bucket et les droits Storage.';console.error(up.error);return}const {data:{publicUrl}}=sb.storage.from('notes-images').getPublicUrl(path);$('publishStatus').textContent='Publication…';const {error}=await sb.from('community_posts').insert({title,perfume_name:$('postPerfume').value.trim(),brand:$('postBrand').value.trim(),note_category:$('postCategory').value,caption:$('postCaption').value.trim(),image_url:publicUrl,created_by:currentUser.id});btn.disabled=false;if(error){$('publishStatus').textContent='Image envoyée, mais publication en base impossible.';console.error(error);return}$('publishForm').reset();$('publishStatus').textContent='Publication en ligne. Les visiteurs peuvent maintenant commenter.';await loadPosts();}
+async function loadReports(){if(!sb||!currentUser)return;const {data,error}=await sb.from('community_reports').select('id,reason,created_at,comment_id,community_comments(id,nickname,body,post_id)').order('created_at',{ascending:false}).limit(50);if(error){$('reports').innerHTML='<p class="noteWarn">Impossible de charger les signalements.</p>';console.error(error);return}if(!data?.length){$('reports').innerHTML='<p class="noteWarn">Aucun signalement en attente.</p>';return}$('reports').innerHTML=data.map(r=>`<div class="report"><strong>${escapeHtml(r.community_comments?.nickname||'Commentaire')}</strong><p>${escapeHtml(r.community_comments?.body||'Commentaire indisponible')}</p><span class="noteWarn">${escapeHtml(r.reason)} · ${fmtDate(r.created_at)}</span><div class="adminTools" style="margin:8px 0 0"><button type="button" data-hide="${escapeHtml(r.comment_id)}" data-report-id="${escapeHtml(r.id)}">Masquer le commentaire</button><button type="button" data-dismiss="${escapeHtml(r.id)}">Clore le signalement</button></div></div>`).join('');$('reports').querySelectorAll('[data-hide]').forEach(b=>b.addEventListener('click',()=>hideComment(b.dataset.hide,b.dataset.reportId)));$('reports').querySelectorAll('[data-dismiss]').forEach(b=>b.addEventListener('click',()=>dismissReport(b.dataset.dismiss)));}
+async function hideComment(id,reportId){const {error}=await sb.from('community_comments').update({is_hidden:true}).eq('id',id);if(error){alert('Impossible de masquer ce commentaire.');console.error(error);return}if(reportId)await dismissReport(reportId);else await loadReports();await loadComments();}
+async function dismissReport(id){const {error}=await sb.from('community_reports').delete().eq('id',id);if(error){console.error(error);return}loadReports()}
+async function init(){if(localStorage.getItem('mp-nickname'))$('nickname').value=localStorage.getItem('mp-nickname');$('discussionModal').addEventListener('click',e=>{if(e.target===$('discussionModal'))closeDiscussion()});$('closeDiscussion').addEventListener('click',closeDiscussion);$('search').addEventListener('input',renderFeed);$('clearSearch').addEventListener('click',()=>{$('search').value='';renderFeed()});$('commentForm').addEventListener('submit',submitComment);$('replying').addEventListener('click',()=>{replyParent=null;$('replying').classList.remove('show')});$('loginForm').addEventListener('submit',login);$('inviteForm').addEventListener('submit',saveInvitePassword);$('logoutBtn').addEventListener('click',logout);$('publishForm').addEventListener('submit',publish);$('refreshBtn').addEventListener('click',()=>{loadPosts();loadReports()});
+ if(!configured){setStatus('Configuration nécessaire : ajoute l’URL et la clé publique Supabase dans le bloc CONFIGURATION du fichier HTML.','error');renderFeed();return}
+ if(!window.supabase?.createClient){setStatus('La bibliothèque Supabase ne s’est pas chargée. Vérifie ta connexion internet.','error');return}
+ inviteFlow=new URLSearchParams(window.location.hash.replace(/^#/,'' )).get('type')==='invite';sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);setStatus('Connexion à la communauté…');await loadPosts();await checkAdmin();sb.auth.onAuthStateChange(()=>setTimeout(checkAdmin,0));liveChannel=sb.channel('community-live').on('postgres_changes',{event:'*',schema:'public',table:'community_posts'},()=>loadPosts()).on('postgres_changes',{event:'INSERT',schema:'public',table:'community_comments'},payload=>{if(currentPost&&payload.new.post_id===currentPost.id)loadComments()}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'community_comments'},payload=>{if(currentPost&&payload.new.post_id===currentPost.id)loadComments()}).subscribe(s=>{if(s==='SUBSCRIBED')setStatus('Communauté connectée · nouveaux avis en direct.','connected')});}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDiscussion()});init();
+</script>
+<script src="/assets/fiche-parse.js"></script>
+<script src="/assets/reviews-admin.js"></script>
+<script src="/assets/site.js"></script>
+</body>
+</html>

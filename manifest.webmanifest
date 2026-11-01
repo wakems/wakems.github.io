@@ -1,0 +1,43 @@
+{
+ "name": "Wakems",
+ "short_name": "Wakems",
+ "start_url": "/",
+ "scope": "/",
+ "display": "standalone",
+ "background_color": "#F3EEE7",
+ "theme_color": "#F3EEE7",
+ "description": "La communauté des passionnés de parfums.",
+ "icons": [
+  {
+   "src": "/assets/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "/assets/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "/assets/apple-touch-icon.png",
+   "sizes": "180x180",
+   "type": "image/png"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "Mon studio de fiches",
+   "url": "/studio.html"
+  },
+  {
+   "name": "Espace créateur",
+   "url": "/createur.html"
+  },
+  {
+   "name": "Mon espace membre",
+   "url": "/profil.html"
+  }
+ ]
+}
