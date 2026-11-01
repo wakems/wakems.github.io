@@ -111,6 +111,7 @@ async function load(){
     const ids=(ps||[]).map(p=>p.id);
     if(ids.length){const {data:cm}=await c.from('community_comments').select('post_id').eq('is_hidden',false).in('post_id',ids).limit(10000);const byPost={};(cm||[]).forEach(x=>byPost[x.post_id]=(byPost[x.post_id]||0)+1);debates.forEach((pid,rid)=>{if(byPost[pid])counts.set(rid,byPost[pid])})}}catch(e){}
   buildChips();render();featured();stats(c);
+  try{window.wakemsOpenReview=openReview;window.dispatchEvent(new CustomEvent('wakems:reviews',{detail:rows}))}catch(e){}
   const deep=new URLSearchParams(location.search).get('parfum');if(deep&&rows.some(r=>r.id===deep))openReview(deep);
   const cnt=document.getElementById('reviewCount');if(cnt)cnt.textContent=rows.length?rows.length+' parfum'+(rows.length>1?'s':'')+' noté'+(rows.length>1?'s':''):'';
 }

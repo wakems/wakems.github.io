@@ -1839,7 +1839,7 @@ function wkHash(str){let h=2166136261>>>0;for(let i=0;i<str.length;i++){h^=str.c
 async function wkSlides(rid,v,ex,force){
   if(!fontsOK){await Promise.race([document.fonts?document.fonts.ready:sleep(0),sleep(2500)])}
   const specs=[];
-  SLIDE_DEFS.forEach(d=>{if(d.id==='cta')return;if(!S.types[d.id]&&d.id!=='perf')return;if(d.id==='notes'&&!hasNotes(v)&&!v.notesText)return;if(d.id==='avis'&&!v.avis)return;specs.push({type:d.id,v,label:d.label})});
+  SLIDE_DEFS.forEach(d=>{if(d.id==='cta')return;if(!S.types[d.id]&&d.id!=='perf')return;if(d.id==='perf'&&!v.tenue&&!v.sillage)return;if(d.id==='notes'&&!hasNotes(v)&&!v.notesText)return;if(d.id==='avis'&&!v.avis)return;specs.push({type:d.id,v,label:d.label})});
   if(!specs.length)return;
   const sig=wkHash(JSON.stringify([v,S.theme,specs.map(x=>x.type)])),mark=wkMap[v.id]||{},old=(ex&&ex.slides)||[];
   if(!force&&mark.slideSig===sig&&old.length)return;

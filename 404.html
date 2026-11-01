@@ -118,6 +118,11 @@ body.public-mode .toplinks{display:flex!important}
     <div class="howItem"><span class="howN">03</span><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="16" cy="18" r="6"/><circle cx="32" cy="18" r="6"/><path d="M4 40c1-8 7-12 12-12s11 4 12 12M20 40c1-8 7-12 12-12s11 4 12 12"/></svg><h3>Partage</h3><p>Crée ton top 10, débats sous chaque note et partage tes coups de cœur.</p></div>
   </section>
 
+  <section class="slideBand" id="slideBand" hidden aria-label="Les diapos Wakems">
+    <div class="blockHead"><div><span class="eyebrow">Sur TikTok @mathwake</span><h2 class="sectionTitle">Les diapos <em>Wakems.</em></h2></div></div>
+    <div class="sbViewport"><div class="sbTrack"></div></div>
+  </section>
+
   <section class="block" id="avis" aria-labelledby="avisTitle">
     <div class="blockHead"><div><span class="eyebrow">Les avis Wakems</span><h2 class="sectionTitle" id="avisTitle">Testés et notés.</h2><p class="sectionSub" id="reviewCount"></p></div>
       <label class="search"><input id="reviewSearch" type="search" placeholder="Un parfum, une maison, une note…" aria-label="Rechercher un avis"></label></div>
@@ -180,6 +185,7 @@ body.public-mode .toplinks{display:flex!important}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/assets/reviews.js"></script>
 <script src="/assets/vote.js"></script>
+<script src="/assets/motion.js"></script>
 <script src="/assets/site.js"></script>
 <script>
 (function(){

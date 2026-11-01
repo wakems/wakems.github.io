@@ -403,3 +403,25 @@ h1 em,.sectionTitle em,.contact h2 em,.tiktokBand h2 em{font-style:italic;font-w
 .weekVote .sectionTitle{line-height:1.02}
 .weekVote .sectionSub{margin-top:14px}
 @media(min-width:701px){.wvImg{aspect-ratio:4/3}}
+/* ===== Animations douces ===== */
+@keyframes wkUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.motion .hero h1{animation:wkUp 1s cubic-bezier(.2,.7,.2,1) both}
+.motion .hero .eyebrow,.motion .hero p{animation:wkUp 1s .15s cubic-bezier(.2,.7,.2,1) both}
+.motion .hero .heroBtns{animation:wkUp 1s .3s cubic-bezier(.2,.7,.2,1) both}
+.motion .hero .stats,.motion .hero .heroStats{animation:wkUp 1s .45s cubic-bezier(.2,.7,.2,1) both}
+.rev{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.rev.in{opacity:1;transform:none}
+.rv .rvImg img,.wv .wvImg img,.featured img{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+@media(hover:hover){.rv:hover .rvImg img,.wv:hover .wvImg img{transform:translateY(-6px) scale(1.04)}}
+@keyframes wkFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.featured img{animation:wkFloat 6s ease-in-out infinite}
+.slideBand{margin:0 0 clamp(40px,6vw,72px);padding-top:clamp(32px,5vw,56px);border-top:1px solid var(--line)}
+.slideBand[hidden]{display:none}
+.sbViewport{overflow:hidden;margin:0 calc(50% - 50vw);padding:6px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+@keyframes wkMarq{to{transform:translateX(-50%)}}
+.sbTrack{display:flex;gap:14px;width:max-content;animation:wkMarq var(--sbDur,60s) linear infinite}
+.sbViewport:hover .sbTrack{animation-play-state:paused}
+.sbItem{flex:0 0 auto;width:clamp(150px,17vw,230px);aspect-ratio:4/5;padding:0;border:0;background:#ddd;cursor:pointer;overflow:hidden}
+.sbItem img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+.sbItem:hover img{transform:scale(1.05)}
+@media(prefers-reduced-motion:reduce){.rev{opacity:1;transform:none;transition:none}.motion .hero *{animation:none!important}.featured img,.sbTrack{animation:none}.sbViewport{overflow-x:auto}}
